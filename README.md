@@ -1,6 +1,9 @@
-# BERT
-BERT Marketing System
+# BERT Marketing System
+
+This is a marketing model using BERT.
+
 # クイックスタート
+
 1. テキスト集め
 
 任意の場所にフォルダを作成  
