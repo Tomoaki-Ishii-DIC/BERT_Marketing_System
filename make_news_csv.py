@@ -70,5 +70,5 @@ for p in range(3):
     print()
 
     if p == 2:
-        df_s[['date', 'title', 'text']].to_csv(folder_path_output[p] + "/" + "news_dataset.csv", index=False)
-        df_s[['date', 'title', 'text']].to_csv(folder_path_x_train + "/" + "x_train.csv", index=False)
+        df[['date', 'title', 'text']].to_csv(folder_path_output[p] + "/" + "news_dataset.csv", index=False)
+        df[['date', 'title', 'text']].to_csv(folder_path_x_train + "/" + "x_train.csv", index=False)
