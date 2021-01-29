@@ -100,7 +100,26 @@ https://yoheikikuta.github.io/bert-japanese/
 
 全ての処理が完了した後、「/datasets」フォルダ内に’y_train.csv’が作成されていることを確認する。
 
-８. RNNのNotebookを実行する
+8. Attention（キーワード）の確認
+
+「attention_excel」フォルダに書くニュース記事に対応した.xlxsファイルが作成されるので、開いて中身を確認する。  
+Self-Attentionが高い言葉がネガポジ判定に寄与した単語と考えられるため、文脈からキーワードを探し出す。  
+
+attention_001.xlsx  
+attention_002.xlsx  
+attention_003.xlsx  
+
+9. Googleトレンドデータの取得
+
+- Googleトレンドデータの取得
+Googleトレンドで上記のキーワードのトレンドを一つずつ表示し、csvにてダウンロードして「/associated_data/multiTimeline」に保管する。  
+
+- その他の指標のデータ
+任意のデータを取得して「/associated_data/multiTimeline」に保管する  
+(「Sprint26_卒業課題_Keras_RNN.ipynb」に読み込みやテーブル化するコードを追加してください。)
+
+
+10. RNNのNotebookを実行する
 
 以下のファイルを実行する
 - Sprint26_卒業課題_Keras_RNN.ipynb
