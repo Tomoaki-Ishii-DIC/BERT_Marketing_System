@@ -28,28 +28,28 @@ This is a marketing model using BERT.
       - LSTMの学習用（ラベリングはBERTが行う）
 
 
-    datasets_text  
+    ./datasets_text  
     &emsp;└─ test  
     &emsp;&emsp;└─ comments  
     &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-          └─ comment_text_xxx.txt  
-        └─ news  
-          └─ news_text_xxx.txt  
-          └─ news_text_xxx.txt  
-      └─ train  
-        └─ comments  
-          └─ comment_text_xxx.txt  
-          └─ comment_text_xxx.txt  
-        └─ news  
-          └─ news_text_xxx.txt  
-          └─ news_text_xxx.txt  
-      └─ pred_labeling  
-        └─ comments  
-          └─ comment_text_xxx.txt  
-          └─ comment_text_xxx.txt  
-        └─ news  
-          └─ news_text_xxx.txt  
-          └─ news_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;└─ news  
+    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;└─ train  
+    &emsp;&emsp;└─ comments  
+    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;└─ news  
+    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;└─ pred_labeling  
+    &emsp;&emsp;└─ comments  
+    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;└─ news  
+    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
 
 3. プログラムで表を作成（csv出力）
 
