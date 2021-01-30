@@ -27,11 +27,11 @@ This is a marketing model using BERT.
     - pred_labelingfinetuning
       - LSTMの学習用（ラベリングはBERTが行う）
 
+
     datasets_text  
-&nbsp;└─ finetuning  
-&nbsp;&nbsp;└─ test  
-                     └─ comments  
-          └─ comment_text_xxx.txt  
+    &emsp;└─ test  
+    &emsp;&emsp;└─ comments  
+    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
           └─ comment_text_xxx.txt  
         └─ news  
           └─ news_text_xxx.txt  
