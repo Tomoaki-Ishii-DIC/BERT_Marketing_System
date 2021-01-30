@@ -29,7 +29,7 @@ This is a marketing model using BERT.
 
 　　datasets_text  
 　　　　├── finetuning  
-　　　　│   ├── test  
+　　　　 │   ├── test  
 　　　　│   │   ├── comments  
 　　　　│   │   │   ├── comment_text_xxx.txt  
 　　　　│   │   │   └── comment_text_xxx.txt  
