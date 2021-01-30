@@ -28,28 +28,28 @@ This is a marketing model using BERT.
       - LSTMの学習用（ラベリングはBERTが行う）
 
     datasets_text  
-    ├── finetuning  
-    │   ├── test  
-    │   │   ├── comments  
-    │   │   │   ├── comment_text_xxx.txt  
-    │   │   │   └── comment_text_xxx.txt  
-    │   │   └── news  
-    │   │       ├── news_text_xxx.txt  
-    │   │       └── news_text_xxx.txt  
-    │   └── train  
-    │       ├── comments  
-    │       │   ├── comment_text_xxx.txt  
-    │       │   └── comment_text_xxx.txt  
-    │       └── news  
-    │           ├── news_text_xxx.txt  
-    │           └── news_text_xxx.txt  
-    └── pred_labeling  
-        ├── comments  
-        │   ├── comment_text_xxx.txt  
-        │   └── comment_text_xxx.txt  
-        └── news  
-            ├── news_text_xxx.txt  
-            └── news_text_xxx.txt  
+        ├── finetuning  
+        │   ├── test  
+        │   │   ├── comments  
+        │   │   │   ├── comment_text_xxx.txt  
+        │   │   │   └── comment_text_xxx.txt  
+        │   │   └── news  
+        │   │       ├── news_text_xxx.txt  
+        │   │       └── news_text_xxx.txt  
+        │   └── train  
+        │       ├── comments  
+        │       │   ├── comment_text_xxx.txt  
+        │       │   └── comment_text_xxx.txt  
+        │       └── news  
+        │           ├── news_text_xxx.txt  
+        │           └── news_text_xxx.txt  
+        └── pred_labeling  
+            ├── comments  
+            │   ├── comment_text_xxx.txt  
+            │   └── comment_text_xxx.txt  
+            └── news  
+                ├── news_text_xxx.txt  
+                └── news_text_xxx.txt  
 
 3. プログラムで表を作成（csv出力）
 
@@ -105,8 +105,8 @@ This is a marketing model using BERT.
     - Sprint26_卒業課題_Keras_BERT_AWS.ipynb
     - Sprint26_卒業課題_Keras_BERT_local.ipynb
 
-    全ての処理が完了した後、./datasets フォルダ内に y_train.csv が作成されていることを確認する。
-    
+    全ての処理が完了した後、 ./datasets フォルダ内に y_train.csv が作成されていることを確認する。
+
 8. Attention（キーワード）の確認
 
     ./attention_excel フォルダに書くニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
