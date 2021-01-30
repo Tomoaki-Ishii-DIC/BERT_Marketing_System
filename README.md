@@ -7,9 +7,9 @@ This is a marketing model using BERT.
 1. テキスト集め
 
 
-    Yahoo!ニュースの記事とコメントをコピーしてテキストファイルに貼り付けて保存(任意のフォルダへ)
+    Yahoo!ニュースの記事とコメントをコピーしてテキストファイルに貼り付けて保存(任意のフォルダへ)。
 
-    以下の形式で保存すること（番号は001から始まる通し番号にする。）  
+    以下の形式で保存すること（番号は001から始まる通し番号にする）。  
 
     news_text_001.txt  
     news_text_002.txt  
@@ -20,7 +20,7 @@ This is a marketing model using BERT.
 
 2. ファイルをフォルダに振り分ける
 
-    ./datasets_text フォルダ内に以下の様に振り分ける（ファイル名は変更しない）  
+    ./datasets_text フォルダ内に以下の様に振り分ける（ファイル名は変更しない）。  
 
     - finetuning
       - BERTのファインチューニング用
@@ -54,11 +54,12 @@ This is a marketing model using BERT.
 
 3. プログラムで表を作成（csv出力）
 
-    以下のファイルを実行
+    以下のファイルを実行する。
+
     - make_news_csv.py
     - make_comments_csv.py
 
-    「datasets_csv」フォルダにファイルが作成されたことを確認する
+    「datasets_csv」フォルダにファイルが作成されたことを確認する。
 
 4. ファインチューニング用のラベルを作成する
 
@@ -101,7 +102,7 @@ This is a marketing model using BERT.
 
 ７. BERTのNotebookを実行
 
-    用途に応じて以下のいづれかのファイルを使用  
+    用途に応じて以下のいづれかのファイルを使用。  
 
     - Sprint26_卒業課題_Keras_BERT_AWS.ipynb
     - Sprint26_卒業課題_Keras_BERT_local.ipynb
@@ -123,13 +124,13 @@ This is a marketing model using BERT.
     Googleトレンドで上記のキーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
 
     - その他の指標のデータ
-    任意のデータを取得して ./associated_data/multiTimeline に保管する  
+    任意のデータを取得して ./associated_data/multiTimeline に保管する。  
     (「Sprint26_卒業課題_Keras_RNN.ipynb」に読み込みやテーブル化するコードを追加してください。)
 
 
 10. RNNのNotebookを実行する
 
-    以下のファイルを実行する
+    以下のファイルを実行する。
 
     - Sprint26_卒業課題_Keras_RNN.ipynb
 
