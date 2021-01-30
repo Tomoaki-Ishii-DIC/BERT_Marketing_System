@@ -119,7 +119,7 @@ This is a marketing ML model using BERT.
     attention_002.xlsx  
     attention_003.xlsx  
 
-    Self-Attentionの値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、前後の文脈からキーワードを探し出す。  
+    Self-Attentionの値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
 
 9. Googleトレンドデータの取得
 
