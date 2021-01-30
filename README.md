@@ -9,7 +9,7 @@ This is a marketing model using BERT.
 
     Yahoo!ニュースの記事とコメントをコピーしてテキストファイルに貼り付けて保存(任意のフォルダへ)
 
-    以下の形式で保存すること（番号は001から初めて通し番号をつける）  
+    以下の形式で保存すること（番号は001から初め、通し番号にする）  
 
     news_text_001.txt  
     news_text_002.txt  
@@ -21,10 +21,11 @@ This is a marketing model using BERT.
 2. ファイルをフォルダに振り分ける
 
     「datasets_text」フォルダ内に以下の様に振り分ける（ファイル名は変更しない）  
-- finetuning
-  - BERTのファインチューニング用
-- pred_labelingfinetuning
-  - LSTMの学習用（ラベリングはBERTが行う）
+
+    - finetuning
+      - BERTのファインチューニング用
+    - pred_labelingfinetuning
+      - LSTMの学習用（ラベリングはBERTが行う）
 
     datasets_text  
     ├── finetuning  
@@ -67,11 +68,16 @@ This is a marketing model using BERT.
     comment_labels_002.csv  
     comment_labels_003.csv  
 
+    ファイルの中は以下の形式で記載する。
+
     |  label  |
     | ---- |
     |  positive  |
     |  negative  |
     |  positive  |
+    |  negative  |
+    |  positive  |
+    |  negative  |
 
 5. 日本語学習済みモデルをダウンロードする
 
