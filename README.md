@@ -121,10 +121,12 @@ This is a marketing ML model using BERT.
 
     Self-Attentionの値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
 
-9. Googleトレンドデータの取得
+9. 関連データの取得
+
+    インターネットから関連データを取得する。
 
     - Googleトレンドデータの取得  
-    Googleトレンドで上記のキーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
+    Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
 
     - その他の指標のデータ  
     任意のデータを取得して ./associated_data/multiTimeline に保管する。  
