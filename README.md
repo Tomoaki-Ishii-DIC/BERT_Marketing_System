@@ -59,7 +59,7 @@ This is a marketing model using BERT.
     - make_news_csv.py
     - make_comments_csv.py
 
-    「datasets_csv」フォルダにファイルが作成されたことを確認する。
+    ./datasets_csv フォルダにファイルが作成されたことを確認する。
 
 4. ファインチューニング用のラベルを作成する
 
