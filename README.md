@@ -97,7 +97,7 @@ This is a marketing model using BERT.
     >"max_position_embeddings": 300,  
     >"max_seq_length": 300,  
 
-    最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」、「Sprint26_卒業課題_Keras_BERT_local.ipynb」内の変数 ’max_token_num’ として出力される。  
+    最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」及び「Sprint26_卒業課題_Keras_BERT_local.ipynb」内の変数 ’max_token_num’ として出力される。  
     実行中に変更の必要性が出た場合、その都度変更する。
 
 
