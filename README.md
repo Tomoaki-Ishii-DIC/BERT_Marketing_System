@@ -100,15 +100,15 @@ This is a marketing model using BERT.
     最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」、「Sprint26_卒業課題_Keras_BERT_local.ipynb」ファイル内の変数 ’max_token_num’ として出力されるので、実行中に変更が必要になればその都度変更する。
 
 
-７. BERTのNotebookを実行
+6. BERTのNotebookを実行
 
-    用途に応じて以下のいづれかのファイルを使用。  
+    用途に応じて以下のいづれかのファイルを使用。
 
     - Sprint26_卒業課題_Keras_BERT_AWS.ipynb
-    - Sprint26_卒業課題_Keras_BERT_local.ipynb
+    - Sprint26_卒業課題_Keras_BERT_local.ipynb  
 
     全ての処理が完了した後、 ./datasets フォルダ内に y_train.csv が作成されていることを確認する。
-
+    
 8. Attention（キーワード）の確認
 
     ./attention_excel フォルダに書くニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
