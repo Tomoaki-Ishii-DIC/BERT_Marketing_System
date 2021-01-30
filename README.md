@@ -28,8 +28,8 @@ This is a marketing model using BERT.
       - LSTMの学習用（ラベリングはBERTが行う）
 
     datasets_text  
-    └─ finetuning  
-      └─ test  
+&nbsp;└─ finetuning  
+&nbsp;&nbsp;└─ test  
         └─ comments  
           └─ comment_text_xxx.txt  
           └─ comment_text_xxx.txt  
