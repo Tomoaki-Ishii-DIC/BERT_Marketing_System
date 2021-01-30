@@ -52,7 +52,7 @@ This is a marketing model using BERT.
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
 
-3. プログラムで表を作成（csv出力）
+3. プログラムで表に変換（csv出力）
 
     以下のファイルを実行する。
 
