@@ -120,10 +120,10 @@ This is a marketing model using BERT.
 
 9. Googleトレンドデータの取得
 
-    - Googleトレンドデータの取得
+    - Googleトレンドデータの取得  
     Googleトレンドで上記のキーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
 
-    - その他の指標のデータ
+    - その他の指標のデータ  
     任意のデータを取得して ./associated_data/multiTimeline に保管する。  
     (「Sprint26_卒業課題_Keras_RNN.ipynb」に読み込みやテーブル化するコードを追加してください。)
 
