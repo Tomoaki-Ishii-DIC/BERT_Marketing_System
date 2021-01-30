@@ -29,28 +29,28 @@ This is a marketing model using BERT.
 
 
     ./datasets_text  
-    └─ finetuning   
-    &emsp;└─ test  
+    &emsp;└─ finetuning   
+    &emsp;&emsp;└─ test  
+    &emsp;&emsp;&emsp;└─ comments  
+    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ news  
+    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;&emsp;└─ train  
+    &emsp;&emsp;&emsp;└─ comments  
+    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
+    &emsp;&emsp;&emsp;└─ news  
+    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
+    &emsp;└&emsp;─ pred_labeling  
     &emsp;&emsp;└─ comments  
     &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
     &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
     &emsp;&emsp;└─ news  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;└─ train  
-    &emsp;&emsp;└─ comments  
-    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;└─ news  
-    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    └─ pred_labeling  
-    &emsp;└─ comments  
-    &emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;└─ news  
-    &emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;&emsp;└─ news_text_xxx.txt  
 
 3. プログラムで表を作成（csv出力）
 
