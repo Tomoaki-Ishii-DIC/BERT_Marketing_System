@@ -30,7 +30,7 @@ This is a marketing model using BERT.
     datasets_text  
 &nbsp;└─ finetuning  
 &nbsp;&nbsp;└─ test  
-        └─ comments  
+                     └─ comments  
           └─ comment_text_xxx.txt  
           └─ comment_text_xxx.txt  
         └─ news  
