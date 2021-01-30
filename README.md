@@ -108,7 +108,7 @@ This is a marketing model using BERT.
     - Sprint26_卒業課題_Keras_BERT_local.ipynb  
 
     全ての処理が完了した後、 ./datasets フォルダ内に y_train.csv が作成されていることを確認する。
-    
+
 8. Attention（キーワード）の確認
 
     ./attention_excel フォルダに書くニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
@@ -137,4 +137,4 @@ This is a marketing model using BERT.
     ファイル内のネガポジ判定結果を確認する。
 
 
-    作業完了
+作業完了
