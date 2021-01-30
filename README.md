@@ -1,6 +1,6 @@
 # BERT Marketing System
 
-This is a marketing model using BERT.
+This is a marketing ML model using BERT.
 
 # クイックスタート
 
@@ -83,7 +83,7 @@ This is a marketing model using BERT.
 
 5. 日本語学習済みモデルをダウンロードする
 
-    以下のモデルを利用しているため、以下のURLにアクセスしGoogleドライブへのリンクから「bert-wiki-ja」フォルダをダウンロードして ./downloads フォルダへ入れる。
+    以下の学習済みモデルを利用しているため、下記URLにアクセスしGoogleドライブへのリンクから「bert-wiki-ja」フォルダをダウンロードして ./downloads フォルダへ入れる。
 
     https://yoheikikuta.github.io/bert-japanese/
 
@@ -96,7 +96,7 @@ This is a marketing model using BERT.
 
     >"max_position_embeddings": 300,  
     >"max_seq_length": 300,  
-    
+
 
     最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」及び「Sprint26_卒業課題_Keras_BERT_local.ipynb」内の変数 ’max_token_num’ として出力される。  
     実行中に変更の必要性が出た場合、その都度変更する。
@@ -111,14 +111,15 @@ This is a marketing model using BERT.
 
     全ての処理が完了した後、 ./datasets フォルダ内に y_train.csv が作成されていることを確認する。
 
-8. Attention（キーワード）の確認
+8. Self-Attention（キーワード）の確認
 
-    ./attention_excel フォルダに書くニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
-    Self-Attentionが高い言葉がネガポジ判定に寄与した単語と考えられるため、文脈からキーワードを探し出す。  
+    ./attention_excel フォルダに各ニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
 
     attention_001.xlsx  
     attention_002.xlsx  
     attention_003.xlsx  
+
+    Self-Attentionが高い単語がネガポジ判定に寄与した単語と考えられるため、前後の文脈からキーワードを探し出す。  
 
 9. Googleトレンドデータの取得
 
