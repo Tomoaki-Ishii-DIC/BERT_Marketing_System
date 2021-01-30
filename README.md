@@ -30,16 +30,16 @@ This is a marketing model using BERT.
 　　datasets_text  
 　　　　├── finetuning  
 　　　　 │   ├── test  
-　　　　 │   │   ├── comments  
-　　　　 │   │   │   ├── comment_text_xxx.txt  
-　　　　 │   │   │   └── comment_text_xxx.txt  
-　　　　 │   │   └── news  
-　　　　 │   │       ├── news_text_xxx.txt  
-　　　　 │   │       └── news_text_xxx.txt  
+　　　　 │    │   ├── comments  
+　　　　 │    │    │   ├── comment_text_xxx.txt  
+　　　　 │    │    │   └── comment_text_xxx.txt  
+　　　　 │    │   └── news  
+　　　　 │    │       ├── news_text_xxx.txt  
+　　　　 │    │       └── news_text_xxx.txt  
 　　　　 │   └── train  
 　　　　 │       ├── comments  
-　　　　 │       │   ├── comment_text_xxx.txt  
-　　　　 │       │   └── comment_text_xxx.txt  
+　　　　 │        │   ├── comment_text_xxx.txt  
+　　　　 │        │   └── comment_text_xxx.txt  
 　　　　 │       └── news  
 　　　　 │           ├── news_text_xxx.txt  
 　　　 　│           └── news_text_xxx.txt  
@@ -49,7 +49,7 @@ This is a marketing model using BERT.
 　　　　　　 │   └── comment_text_xxx.txt  
 　　　　　　└── news  
 　　　　　　　　├── news_text_xxx.txt  
-　　　　　　　 └── news_text_xxx.txt  
+　　　　　　　  └── news_text_xxx.txt  
 
 3. プログラムで表を作成（csv出力）
 
