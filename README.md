@@ -101,8 +101,8 @@ This is the Marketing Machine Learning Model that used BERT.
     最大単語数を必要に応じて変更する。  
 
     ```bash
-    >"max_position_embeddings": 300,  
-    >"max_seq_length": 300,  
+    "max_position_embeddings": 300,  
+    "max_seq_length": 300,  
     ```
 
     最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」及び「Sprint26_卒業課題_Keras_BERT_local.ipynb」内の変数 ’max_token_num’ として出力される。  
