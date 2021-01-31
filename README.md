@@ -193,11 +193,4 @@ This is the Marketing Machine Learning Model that used BERT.
 	- 事業に関連する指標の時系列データ（いくつか）
 ```
 
-
-
-
-
-    |  label  |  label  |
-    | ---- | ---- |
-    |  positive  |  positive  |
-    |  negative  |  negative  |
+# User's Manual
