@@ -30,7 +30,6 @@ This is the Marketing Machine Learning Model that used BERT.
       - LSTMの学習用（ラベリングはBERTが行う）
 
 
-　　```bash
     ./datasets_text  
     &emsp;└─ finetuning   
     &emsp;&emsp;└─ test  
@@ -54,7 +53,7 @@ This is the Marketing Machine Learning Model that used BERT.
     &emsp;&emsp;└─ news  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    ```
+
 
 3. プログラムで表に変換（csv出力）
 
@@ -79,7 +78,6 @@ This is the Marketing Machine Learning Model that used BERT.
 
     ファイルの中は以下の形式で記載する。
 
-    ```bash
     |  label  |
     | ---- |
     |  positive  |
@@ -88,7 +86,6 @@ This is the Marketing Machine Learning Model that used BERT.
     |  negative  |
     |  positive  |
     |  negative  |
-    ```
 
 5. 日本語学習済みモデルをダウンロードする
 
