@@ -54,7 +54,6 @@ This is the Marketing Machine Learning Model that used BERT.
     &emsp;&emsp;└─ news  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-
     ```
 
 3. プログラムで表に変換（csv出力）
@@ -89,7 +88,6 @@ This is the Marketing Machine Learning Model that used BERT.
     |  negative  |
     |  positive  |
     |  negative  |
-
     ```
 
 5. 日本語学習済みモデルをダウンロードする
