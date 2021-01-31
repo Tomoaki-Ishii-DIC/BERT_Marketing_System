@@ -1,8 +1,8 @@
 # BERT Marketing System
 
-This is a marketing ML model using BERT.
+This is the Marketing Machine Learning Model that used BERT.
 
-# クイックスタート
+# Quick Start
 
 1. テキスト集め
 
@@ -119,7 +119,7 @@ This is a marketing ML model using BERT.
     attention_002.xlsx  
     attention_003.xlsx  
 
-    Self-Attentionの値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
+    Self-Attention層の重みの数値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
 
 9. 関連する時系列データの取得
 
@@ -143,3 +143,52 @@ This is a marketing ML model using BERT.
 
 
 作業完了
+
+# What is the BERT Marketing System
+
+このプログラムは自社のプレスリリースとそれに関連する時系列指標データを入力するとプレスリリースに対する一般消費者の反応の予測を出力するプログラムです。
+
+一般消費者の反応の予測はPositiveまたはNegativeで返されます。
+
+ネガポジ判定は各種AutoMLでも可能ですが、このモデルの強みはテキストだけでなく関連する数値データを組み合わせて推測することができる点です。
+
+このモデルは２段階のモデルになっています。
+
+モデル概要
+
+```bash
+- First stage
+	- BERT（Keras）
+		- 事前学習済みモデルをファインチューニング
+		- 推測を利用した各ニュースに対してのラベル付け（ネガポジ）
+		- Self-Attention抽出によるキーワード把握
+
+- Second stage
+	- LSTM（Keras）
+		- ニューステキストと各数値指標（トレンドや業界関連データ）の同時入力による時系列学習と予測
+```
+
+![caption](./ModelImage.jpg)
+
+利用するためにはまず取得したデータをこのモデルに学習させる必要があります。
+
+このモデルは２段階のモデルになっており、それぞれの段階において以下の学習データが必要です。
+
+```bash
+- First stage
+	- ニュース記事のテキスト（数十件）
+	- そのニュースに対するコメントのテキスト（全て）
+
+- Second stage
+	- キーワード（Second stageの出力）のトレンドデータ
+	- 事業に関連する指標の時系列データ（いくつか）
+```
+
+
+
+
+
+    |  label  |  label  |
+    | ---- | ---- |
+    |  positive  |  positive  |
+    |  negative  |  negative  |
