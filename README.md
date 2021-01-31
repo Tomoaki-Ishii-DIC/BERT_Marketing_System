@@ -6,7 +6,6 @@ This is the Marketing Machine Learning Model that used BERT.
 
 1. テキスト集め
 
-
     Yahoo!ニュースの記事とコメントをコピーしてテキストファイルに貼り付けて保存(任意のフォルダへ)。
 
     以下の形式で保存すること（番号は001から始まる通し番号にする）。  
@@ -29,31 +28,31 @@ This is the Marketing Machine Learning Model that used BERT.
     - pred_labelingfinetuning
       - LSTMの学習用（ラベリングはBERTが行う）
 
-
+    ```bash
     ./datasets_text  
-    &emsp;└─ finetuning   
-    &emsp;&emsp;└─ test  
-    &emsp;&emsp;&emsp;└─ comments  
-    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;&emsp;└─ news  
-    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;&emsp;└─ train  
-    &emsp;&emsp;&emsp;└─ comments  
-    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;&emsp;└─ news  
-    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;&emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;└─ pred_labeling  
-    &emsp;&emsp;└─ comments  
-    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;&emsp;└─ comment_text_xxx.txt  
-    &emsp;&emsp;└─ news  
-    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-    &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
-
+      └─ finetuning   
+        └─ test  
+          └─ comments  
+            └─ comment_text_xxx.txt  
+            └─ comment_text_xxx.txt  
+          └─ news  
+            └─ news_text_xxx.txt  
+            └─ news_text_xxx.txt  
+        └─ train  
+          └─ comments  
+            └─ comment_text_xxx.txt  
+            └─ comment_text_xxx.txt  
+          └─ news  
+            └─ news_text_xxx.txt  
+            └─ news_text_xxx.txt  
+      └─ pred_labeling  
+        └─ comments  
+          └─ comment_text_xxx.txt  
+          └─ comment_text_xxx.txt  
+        └─ news  
+          └─ news_text_xxx.txt  
+          └─ news_text_xxx.txt  
+    ```
 
 3. プログラムで表に変換（csv出力）
 
