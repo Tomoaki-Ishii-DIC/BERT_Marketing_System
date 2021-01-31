@@ -11,12 +11,14 @@ This is the Marketing Machine Learning Model that used BERT.
 
     以下の形式で保存すること（番号は001から始まる通し番号にする）。  
 
+    ```bash
     news_text_001.txt  
     news_text_002.txt  
     news_text_003.txt  
     comment_text_001.txt  
     comment_text_002.txt  
     comment_text_003.txt  
+    ```
 
 2. ファイルをフォルダに振り分ける
 
@@ -28,6 +30,7 @@ This is the Marketing Machine Learning Model that used BERT.
       - LSTMの学習用（ラベリングはBERTが行う）
 
 
+　　```bash
     ./datasets_text  
     &emsp;└─ finetuning   
     &emsp;&emsp;└─ test  
@@ -52,6 +55,8 @@ This is the Marketing Machine Learning Model that used BERT.
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
     &emsp;&emsp;&emsp;└─ news_text_xxx.txt  
 
+    ```
+
 3. プログラムで表に変換（csv出力）
 
     以下のファイルを実行する。
@@ -66,12 +71,16 @@ This is the Marketing Machine Learning Model that used BERT.
     ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。  
     ファイル名は以下の形式に従う。
 
+    ```bash
     comment_labels_001.csv  
     comment_labels_002.csv  
     comment_labels_003.csv  
 
+    ```
+
     ファイルの中は以下の形式で記載する。
 
+    ```bash
     |  label  |
     | ---- |
     |  positive  |
@@ -80,6 +89,8 @@ This is the Marketing Machine Learning Model that used BERT.
     |  negative  |
     |  positive  |
     |  negative  |
+
+    ```
 
 5. 日本語学習済みモデルをダウンロードする
 
@@ -94,9 +105,10 @@ This is the Marketing Machine Learning Model that used BERT.
 
     最大単語数を必要に応じて変更する。  
 
+    ```bash
     >"max_position_embeddings": 300,  
     >"max_seq_length": 300,  
-
+    ```
 
     最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」及び「Sprint26_卒業課題_Keras_BERT_local.ipynb」内の変数 ’max_token_num’ として出力される。  
     実行中に変更の必要性が出た場合、その都度変更する。
@@ -115,9 +127,11 @@ This is the Marketing Machine Learning Model that used BERT.
 
     ./attention_excel フォルダに各ニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
 
+    ```bash
     attention_001.xlsx  
     attention_002.xlsx  
     attention_003.xlsx  
+    ```
 
     Self-Attention層の重みの数値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
 
