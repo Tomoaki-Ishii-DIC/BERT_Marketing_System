@@ -23,27 +23,9 @@ import preprocessing
 sys.path.append('modules')
 
 # 上にあったのと同じ？ → predict用に変更
-def _get_indice_pred(feature, maxlen):
-    indices = np.zeros((maxlen), dtype=np.int32)
 
-    tokens = []
-    tokens.append('[CLS]')
-    pre_text = preprocessing.preprocessing_text(feature)#追加
-    tokenized_text = preprocessing.tokenizer_mecab(pre_text)#追加
-    tokens.extend(tokenized_text)#追加
-    #tokens.extend(spp.encode_as_pieces(feature))
-    tokens.append('[SEP]')
+# _get_indice_pred 削除
 
-    for t, token in enumerate(tokens):
-        if t >= maxlen:
-            break
-        try:
-            indices[t] = spp.piece_to_id(token)
-        except:
-            logging.warn('unknown')
-            indices[t] = spp.piece_to_id('<unk>')
-
-    return indices, tokens
 
 #tests_features_df = pd.read_csv('./datasets/pred_labeling/features_006.csv')
 #tests_features_df.loc[0]['feature']
@@ -102,7 +84,7 @@ for i in range(file_count):
         feature = df_tests_features.loc[j]['feature']
 
         test_features = []
-        indices, tokens = _get_indice_pred(feature, maxlen)
+        indices, tokens = preprocessing._get_indice_pred(feature, maxlen)
         test_features.append(indices)
 
         #勝手に追加
