@@ -24,34 +24,9 @@ import numpy as np
 # 上に同じ名前の関数があるので注意
 # 最大単語数分のID化された文を返す関数
 # maxlenがなくてエラーになるので勝手に追加（maxlenは最大単語数か？）
-def _get_indice(feature, maxlen):
-#def _get_indice(feature):
-    # インデックス ０で埋める
-    sp = spm.SentencePieceProcessor()
-    sp.Load('./downloads/bert-wiki-ja/wiki-ja.model')
 
-    indices = np.zeros((maxlen), dtype = np.int32)
-    # 最初に[CLS]、最後に'[SEP]をつけてトークン作る
-    tokens = []
-    tokens.append('[CLS]')
-    pre_text = preprocessing.preprocessing_text(feature)#追加
-    tokenized_text = preprocessing.tokenizer_mecab(pre_text)#追加
-    tokens.extend(tokenized_text)#追加
-    #tokens.extend(sp.encode_as_pieces(feature))# sentence piece
-    tokens.append('[SEP]')
 
-    for t, token in enumerate(tokens):
-        # 最大単語数までトークンの単語をindicesに入れていく
-        if t >= maxlen:
-            break
-        try:
-            indices[t] = sp.piece_to_id(token)# id化してくれる？
-        except:
-            logging.warn(f'{token} is unknown.')# コメントしてくれる
-            indices[t] = sp.piece_to_id('<unk>')# id化してくれる？unknown
-
-    # 最大単語数分のID化された文を返す
-    return indices
+# 関数移動　_get_indice
 
 
 #勝手に追加 maxlen=103
@@ -90,13 +65,13 @@ def _load_labeldata(train_dir, test_dir, maxlen):
     test_features = []
     for feature in train_features_df['feature']:
         # 上で作った関数 _get_indice  を使ってID化
-        train_features.append(_get_indice(feature, maxlen))
+        train_features.append(preprocessing._get_indice(feature, maxlen))
     # shape(len(train_features), maxlen)のゼロの行列作成
     train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
 
     for feature in test_features_df['feature']:
         # 上で作った関数 _get_indice  を使ってID化
-        test_features.append(_get_indice(feature, maxlen))
+        test_features.append(preprocessing._get_indice(feature, maxlen))
     # shape(len(test_features), maxlen)のゼロの行列作成
     test_segments = np.zeros((len(test_features), maxlen), dtype = np.float32)
 
@@ -115,6 +90,7 @@ def _load_labeldata(train_dir, test_dir, maxlen):
         'test_segments': np.array(test_segments),
         'input_len': maxlen
     }
+
 
 
 # おそらく、この関数を作った理由は複数分類モデルを自由に作れるようにしたかったからだ。
@@ -203,7 +179,7 @@ model.summary()
 
 history = model.fit([data['train_features'], data['train_segments']],
           data['train_labels'],
-          epochs = EPOCH#1,#3,
+          epochs = EPOCH,#1,#3,
           #epochs = EPOCH,
           batch_size = BATCH_SIZE,
           validation_data=([data['test_features'], data['test_segments']], data['test_labels']),
