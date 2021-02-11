@@ -18,7 +18,13 @@ from keras.optimizers import RMSprop
 #from keras.models import Sequential
 #from keras.layers import Dense
 from keras.layers import LSTM
+from keras.callbacks import EarlyStopping
 #import matplotlib.pyplot as plt
+
+
+index_f_path = "./associated_data/dataframe_all.csv"
+df = pd.read_csv(index_f_path, index_col=0)#, index_col=0
+print(df)
 
 
 BATCHSIZE = 3
@@ -36,7 +42,7 @@ model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics = ['accuracy'])
 
-model.summary()
+#model.summary()
 
 
 # multivariate data preparation
@@ -49,15 +55,15 @@ def split_sequences(sequences, n_steps):
     for i in range(len(sequences)):
         # find the end of this pattern
         end_ix = i + n_steps
-        print(i)
-        print(end_ix)
+        #print(i)
+        #print(end_ix)
         # check if we are beyond the dataset
         if end_ix > len(sequences):
             break
         # gather input and output parts of the pattern
-        print(sequences[i:end_ix])
-        print(sequences[i:end_ix, :-1])
-        print(sequences[end_ix-1, -1])
+        #print(sequences[i:end_ix])
+        #print(sequences[i:end_ix, :-1])
+        #print(sequences[end_ix-1, -1])
         seq_x, seq_y = sequences[i:end_ix, :-1], sequences[end_ix-1, -1]
         X.append(seq_x)
         y.append(seq_y)
@@ -66,31 +72,39 @@ def split_sequences(sequences, n_steps):
 
     # choose a number of time steps
 n_steps = 3
-dataset = np.array(df_drop.iloc[:, 1:])
+dataset = np.array(df.iloc[:, 1:])
 
 print(dataset.shape)
 # convert into input/output
 X, y = split_sequences(dataset, n_steps)
 print(X.shape, y.shape)
-print(X)
+#print(X)
 
 # summarize the data
-for i in range(len(X)):
-    print(X[i], y[i])
+#for i in range(len(X)):
+#    print(X[i], y[i])
+
+split_rate = 0.7
+split = int(X.shape[0]*split_rate)
+
+print("Split rate: ", split_rate)
+print("Train_split: ", split)
+print("Val_split: ", X.shape[0]-split)
+
+#X_train = X[:split, :]
+#X_test = X[split:, :]
+#y_train = y[:split]
+#y_test = y[split:]
+#print(X_train.shape)
+#print(X_test.shape)
+#print(y_train.shape)
+#print(y_test.shape)
 
 
-X_train = X[:13, :]
-X_test = X[13:, :]
-y_train = y[:13]
-y_test = y[13:]
-print(X_train.shape)
-print(X_test.shape)
-print(y_train.shape)
-print(y_test.shape)
-
-
-history = model.fit(X_train, y_train, batch_size = BATCHSIZE, epochs = EPOCHS)
-modelName = model.__class__.__name__
+early_stopping = EarlyStopping(monitor='val_loss', mode='auto', patience=0)
+history = model.fit(X, y, batch_size = BATCHSIZE, epochs = EPOCHS, validation_split=0.3, callbacks=[early_stopping])
+#history = model.fit(X_train, y_train, batch_size = BATCHSIZE, epochs = EPOCHS)
+#modelName = model.__class__.__name__
 
 
 model.save('./saved_model')
