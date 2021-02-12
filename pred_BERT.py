@@ -17,7 +17,7 @@ from keras import Input, Model
 
 import openpyxl
 
-import preprocessing
+from preprocessing import preprocessing
 
 #sys.pathに追加（必要なのか調査が必要）
 sys.path.append('modules')
