@@ -3,7 +3,8 @@ from keras_bert import load_trained_model_from_checkpoint
 import pandas as pd
 import sentencepiece as spm
 
-import preprocessing
+from preprocessing import preprocessing
+from preprocessing import make_datasets
 
 #sys.pathに追加（必要なのか調査が必要）
 sys.path.append('modules')
@@ -134,7 +135,8 @@ def _create_model(input_shape, class_count):
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 
 
-
+# データセットの作成
+make_datasets.make_ds()
 
 # BERTのロード
 config_path = './downloads/bert-wiki-ja_config/bert_finetuning_config_v1.json'
