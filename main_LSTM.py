@@ -22,6 +22,18 @@ from keras.callbacks import EarlyStopping
 #import matplotlib.pyplot as plt
 
 
+from preprocessing import make_table_text
+from preprocessing import make_table_trend
+from preprocessing import concat_dataset_table
+
+# デーブルの作成（現行ではcsv出力。今後、dfの受け渡しに変更予定。）
+make_table_text.make_table()
+make_table_trend.make_table()
+concat_dataset_table.concat()
+
+
+# main_LSTMの処理
+
 index_f_path = "./associated_data/dataframe_all.csv"
 df = pd.read_csv(index_f_path, index_col=0)#, index_col=0
 print(df)
