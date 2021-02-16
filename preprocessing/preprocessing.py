@@ -54,7 +54,7 @@ def get_max(X):
         numbers.append(number)
 
     max_token_num = max(numbers)
-    print("Maximum number of words: " + str(max_token_num))
+    #print("Maximum number of words: " + str(max_token_num))
 
     return max_token_num
 
