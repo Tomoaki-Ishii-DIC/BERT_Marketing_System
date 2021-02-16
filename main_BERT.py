@@ -28,16 +28,24 @@ import numpy as np
 
 
 # 関数移動　_get_indice
-
+from preprocessing import preprocessing#自作ファイルの読み込み
+from preprocessing import change_config
 
 #勝手に追加 maxlen=103
 # 引数のパスは直接書けばいらないかも
-def _load_labeldata(train_dir, test_dir, maxlen):
+def _load_labeldata(train_dir, test_dir):
     # pandasでcsvの学習データとテストデータを読み込む
     train_features_df = pd.read_csv(f'{train_dir}/features.csv')
     train_labels_df = pd.read_csv(f'{train_dir}/labels.csv')
     test_features_df = pd.read_csv(f'{test_dir}/features.csv')
     test_labels_df = pd.read_csv(f'{test_dir}/labels.csv')
+
+    maxlen_train = preprocessing.get_max(train_features_df['feature'])
+    maxlen_test = preprocessing.get_max(test_features_df['feature'])
+    print("maxlen_train", maxlen_train)
+    print("maxlen_test", maxlen_test)
+    maxlen=max(maxlen_train, maxlen_test)
+    print("maxlen", maxlen)
 
     ##### ラベル側の処理 #####
 
@@ -78,7 +86,7 @@ def _load_labeldata(train_dir, test_dir, maxlen):
 
     print(f'Trainデータ数: {len(train_features_df)}, Testデータ数: {len(test_features_df)}, ラベル数: {class_count}')
 
-    return {
+    data_dic = {
         'class_count': class_count,
         'label2index': label2index,
         'index2label': index2label,
@@ -91,6 +99,8 @@ def _load_labeldata(train_dir, test_dir, maxlen):
         'test_segments': np.array(test_segments),
         'input_len': maxlen
     }
+
+    return data_dic
 
 
 
@@ -146,12 +156,21 @@ checkpoint_path = './downloads//bert-wiki-ja/model.ckpt-1400000'
 # 最大のトークン数
 #import preprocessing#自作ファイルの読み込み
 #max_numbers = preprocessing.get_max(train_features_df['feature'])
-SEQ_LEN = 224#max_token_num#max_numbers
+#SEQ_LEN = 224#max_token_num#max_numbers
 BATCH_SIZE = 16
 BERT_DIM = 768
 LR = 1e-4
 # 学習回数
 EPOCH = 1#20
+
+trains_dir = './datasets/finetuning/train'
+tests_dir = './datasets/finetuning/test'
+
+#上で作った関数
+data = _load_labeldata(trains_dir, tests_dir)
+SEQ_LEN = data['input_len']
+
+change_config.set_config(SEQ_LEN)
 
 # 学習ずみモデルでモデル構築
 bert = load_trained_model_from_checkpoint(config_path, checkpoint_path, training=True,  trainable=True, seq_len=SEQ_LEN)
@@ -160,12 +179,6 @@ bert.summary()
 # この後に追加する（転移学習）
 # 分類問題用にモデルの再構築
 
-
-trains_dir = './datasets/finetuning/train'
-tests_dir = './datasets/finetuning/test'
-
-#上で作った関数
-data = _load_labeldata(trains_dir, tests_dir, SEQ_LEN)
 
 # モデルの読み込み
 model_filename = './downloads/models/knbc_finetuning.model'
