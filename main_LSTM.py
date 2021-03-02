@@ -119,4 +119,4 @@ history = model.fit(X, y, batch_size = BATCHSIZE, epochs = EPOCHS, validation_sp
 #modelName = model.__class__.__name__
 
 
-model.save('./saved_model')
+model.save('./models/saved_model_LSTM')
