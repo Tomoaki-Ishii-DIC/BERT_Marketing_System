@@ -1,205 +1,152 @@
 import sys
-from keras_bert import load_trained_model_from_checkpoint
-import pandas as pd
+import os
+import re
+import codecs
 import sentencepiece as spm
+
+import pandas as pd
 
 from preprocessing import preprocessing
 from preprocessing import make_datasets
-
-#sys.pathに追加（必要なのか調査が必要）
-sys.path.append('modules')
-
-#import pprint
-#pprint.pprint(sys.path)
-
-
-
+from preprocessing import change_config
 
 
 from keras.utils import np_utils
 from keras import utils
 import numpy as np
 
-# ここでもsentence piece
 
-# 上に同じ名前の関数があるので注意
-# 最大単語数分のID化された文を返す関数
-# maxlenがなくてエラーになるので勝手に追加（maxlenは最大単語数か？）
-
-
-# 関数移動　_get_indice
-from preprocessing import preprocessing#自作ファイルの読み込み
-from preprocessing import change_config
-
-#勝手に追加 maxlen=103
-# 引数のパスは直接書けばいらないかも
-def _load_labeldata(train_dir, test_dir):
-    # pandasでcsvの学習データとテストデータを読み込む
-    train_features_df = pd.read_csv(f'{train_dir}/features.csv')
-    train_labels_df = pd.read_csv(f'{train_dir}/labels.csv')
-    test_features_df = pd.read_csv(f'{test_dir}/features.csv')
-    test_labels_df = pd.read_csv(f'{test_dir}/labels.csv')
-
-    maxlen_train = preprocessing.get_max(train_features_df['feature'])
-    maxlen_test = preprocessing.get_max(test_features_df['feature'])
-    print("maxlen_train", maxlen_train)
-    print("maxlen_test", maxlen_test)
-    maxlen=max(maxlen_train, maxlen_test)
-    print("maxlen", maxlen)
-
-    ##### ラベル側の処理 #####
-
-    # ラベルのユニーク値を取り出す（ラベル数）（インデックスとラベル別別に保管）
-    # ネガポジなら　ポジティブ, ネガティブ と　０、１　を入れてしまえばいいと思われる
-    #{'スポーツ': 0, '携帯電話': 1},
-    label2index = {k: i for i, k in enumerate(train_labels_df['label'].unique())}
-    #{0: 'スポーツ', 1: '携帯電話'}
-    index2label = {i: k for i, k in enumerate(train_labels_df['label'].unique())}
-    #　クラス数（何種類に分類するか）ネガポジなら２
-    class_count = len(label2index)
-
-    # Numpyユーティリティ to_categorical(y, nb_classes=None)
-    # クラスベクトル（0からnb_classesまでの整数）を categorical_crossentropyとともに用いるためのバイナリのクラス行列に変換します．
-    # y: 行列に変換するクラスベクトル, nb_classes: 総クラス数
-    # ↓trainのラベルを文字からインデックスを使用して変換
-    train_labels = utils.np_utils.to_categorical([label2index[label] for label in train_labels_df['label']], num_classes=class_count)
-    #　testのインデックスをまず作る
-    test_label_indices = [label2index[label] for label in test_labels_df['label']]
-    # ↓testのラベルを文字からインデックスを使用して変換
-    test_labels = utils.np_utils.to_categorical(test_label_indices, num_classes=class_count)
-
-    ##### 特徴量側の処理 #####
-
-    train_features = []
-    test_features = []
-    for feature in train_features_df['feature']:
-        # 上で作った関数 _get_indice  を使ってID化
-        train_features.append(preprocessing._get_indice(feature, maxlen))
-    # shape(len(train_features), maxlen)のゼロの行列作成
-    train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
-
-    for feature in test_features_df['feature']:
-        # 上で作った関数 _get_indice  を使ってID化
-        test_features.append(preprocessing._get_indice(feature, maxlen))
-    # shape(len(test_features), maxlen)のゼロの行列作成
-    test_segments = np.zeros((len(test_features), maxlen), dtype = np.float32)
-
-    print(f'Trainデータ数: {len(train_features_df)}, Testデータ数: {len(test_features_df)}, ラベル数: {class_count}')
-
-    data_dic = {
-        'class_count': class_count,
-        'label2index': label2index,
-        'index2label': index2label,
-        'train_labels': train_labels,
-        'test_labels': test_labels,
-        'test_label_indices': test_label_indices,
-        'train_features': np.array(train_features),
-        'train_segments': np.array(train_segments),
-        'test_features': np.array(test_features),
-        'test_segments': np.array(test_segments),
-        'input_len': maxlen
-    }
-
-    return data_dic
-
-
-
-# おそらく、この関数を作った理由は複数分類モデルを自由に作れるようにしたかったからだ。
-# 単にネガポジにするなら関数にしないで直接書けばいい。
-
-from keras.layers import Dense, Dropout, LSTM, Bidirectional, Flatten, GlobalMaxPooling1D
+import keras
+from keras_bert import load_trained_model_from_checkpoint
 from keras_bert.layers import MaskedGlobalMaxPool1D
 from keras import Input, Model
+from keras.models import Model
+from keras.layers import Dense, Dropout, LSTM, Bidirectional, Flatten, GlobalMaxPooling1D
+from keras.layers import Dense,Input,Flatten,concatenate,Dropout,Lambda
+from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from keras.optimizers import Adam
+import keras.backend as K #?
 
-# nadam を選べば使わなくてもいい
-# https://github.com/CyberZHG/keras-bert
-from keras_bert import AdamWarmup, calc_train_steps
 
-def _create_model(input_shape, class_count):
-    # AdamWarmupをオプティマイザーとして使用するために必要な情報を得る関数
-    # nadam を選べば使わなくてもいい
-    decay_steps, warmup_steps = calc_train_steps(
-        input_shape[0],
-        batch_size=BATCH_SIZE,
-        epochs=EPOCH,
-    )
+def create_model():
+    config_file = os.path.join('./downloads/bert-wiki-ja_config', 'bert_finetuning_config_v1.json')
+    checkpoint_file = os.path.join('./downloads/bert-wiki-ja', 'model.ckpt-1400000')
 
-    # 学習済みモデル 「bert」 の最終出力層のoutputを取り出す
-    bert_last = bert.get_layer(name='NSP-Dense').output
-    x1 = bert_last
-    # 最終出力層のoutputを新規作成した全結合層に入れる
-    output_tensor = Dense(class_count, activation='softmax')(x1)
+    pre_trained_model = load_trained_model_from_checkpoint(config_file,
+                                                            checkpoint_file,
+                                                            training=True,
+                                                            seq_len=SEQ_LEN)
+    pre_trained_output  = pre_trained_model.get_layer(name='NSP-Dense').output
+    model_output = Dense(2, activation='softmax')(pre_trained_output)
 
-    # Trainableの場合は、Input Masked Layerが3番目の入力なりますが、
-    # FineTuning時には必要無いので1, 2番目の入力だけ使用します。
-    # Trainableでなければkeras-bertのModel.inputそのままで問題ありません。
-    model = Model([bert.input[0], bert.input[1]], output_tensor)
+    model  = Model(inputs=[pre_trained_model.input[0],
+                    pre_trained_model.input[1]],
+                    outputs=model_output)
+
     model.compile(loss='categorical_crossentropy',
-                  optimizer=AdamWarmup(decay_steps=decay_steps, warmup_steps=warmup_steps, lr=LR),
-                  #optimizer='nadam',
-                  metrics=['mae', 'mse', 'acc'])
+                    optimizer=Adam(),#'nadam',
+                    metrics=['mae', 'mse', 'acc'])
 
     return model
 
-# データロードとモデルの準備
-from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+
+train_dir = './datasets/finetuning/train'
+test_dir = './datasets/finetuning/test'
+
+
+# pandasでcsvの学習データとテストデータを読み込む
+train_features_df = pd.read_csv(train_dir + '/features.csv')
+train_labels_df = pd.read_csv(train_dir + '/labels.csv')
+test_features_df = pd.read_csv(test_dir + '/features.csv')
+test_labels_df = pd.read_csv(test_dir + '/labels.csv')
+
+# 最大行の取得
+maxlen_train = preprocessing.get_max(train_features_df['feature'])
+maxlen_test = preprocessing.get_max(test_features_df['feature'])
+print("maxlen_train", maxlen_train)
+print("maxlen_test", maxlen_test)
+
+maxlen=max(maxlen_train, maxlen_test)
+print("maxlen", maxlen)
+
+##### ラベル側の処理 #####
+
+"""
+label2index = {'positive': 0, 'negative': 1}
+index2label = {0: 'positive', 1: 'negative'}
+print("label2index", label2index)
+print("index2label", index2label)
+"""
+#　クラス数（何種類に分類するか）ネガポジなら２
+class_count = 2
+
+train_dum = pd.get_dummies(train_labels_df)
+test_dum = pd.get_dummies(test_labels_df)
+train_labels = np.array(train_dum[['label_positive', 'label_negative']])
+test_labels = np.array(test_dum[['label_positive', 'label_negative']])
+
+print("train_labels　get_dummies :", train_labels.shape)
+print("test_labels　get_dummies :", test_labels.shape)
+
+##### 特徴量側の処理 #####
+
+train_features = []
+test_features = []
+for feature in train_features_df['feature']:
+    # ID化
+    train_features.append(preprocessing._get_indice(feature, maxlen))
+train_features = np.array(train_features)
+
+# shape(len(train_features), maxlen)のゼロの行列作成
+train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
+
+for feature in test_features_df['feature']:
+    # ID化
+    test_features.append(preprocessing._get_indice(feature, maxlen))
+test_features = np.array(test_features)
+
+# shape(len(test_features), maxlen)のゼロの行列作成
+test_segments = np.zeros((len(test_features), maxlen), dtype = np.float32)
+
+print("train_features :", train_features.shape)
+print("test_features :", test_features.shape)
 
 
 # データセットの作成
 make_datasets.make_ds()
 
-# BERTのロード
-config_path = './downloads/bert-wiki-ja_config/bert_finetuning_config_v1.json'
-# 拡張子まで記載しない（.ckptファイルで保存されている）
-checkpoint_path = './downloads//bert-wiki-ja/model.ckpt-1400000'
-
-# 最大のトークン数
-#import preprocessing#自作ファイルの読み込み
-#max_numbers = preprocessing.get_max(train_features_df['feature'])
-#SEQ_LEN = 224#max_token_num#max_numbers
+# パラメータ
+SEQ_LEN = maxlen
 BATCH_SIZE = 16
 BERT_DIM = 768
 LR = 1e-4
+
 # 学習回数
 EPOCH = 1#20
 
-trains_dir = './datasets/finetuning/train'
-tests_dir = './datasets/finetuning/test'
-
-#上で作った関数
-data = _load_labeldata(trains_dir, tests_dir)
-SEQ_LEN = data['input_len']
-
+# 設定の変更
 change_config.set_config(SEQ_LEN)
 
-# 学習ずみモデルでモデル構築
-bert = load_trained_model_from_checkpoint(config_path, checkpoint_path, training=True,  trainable=True, seq_len=SEQ_LEN)
-bert.summary()
-
-# この後に追加する（転移学習）
-# 分類問題用にモデルの再構築
-
-
-# モデルの読み込み
-model_filename = './downloads/models/knbc_finetuning.model'
-
-# 上で作った関数（関数を使わずに直接書くこともできる）
-# data['train_features'].shape　は　文の数×最大単語数　＝　特徴量Xのインプットshape
-# data['class_count']　は　クラスの数
-model = _create_model(data['train_features'].shape, data['class_count'])
-
+# モデルの作成
+model = create_model()
 model.summary()
 
 
+# コールバック用　チェックポイント保存用
+model_filename = './models/finetuning_checkpoint'
 
-history = model.fit([data['train_features'], data['train_segments']],
-          data['train_labels'],
+# 学習
+history = model.fit([train_features, train_segments],
+          train_labels,
           epochs = EPOCH,#1,#3,
           #epochs = EPOCH,
           batch_size = BATCH_SIZE,
-          validation_data=([data['test_features'], data['test_segments']], data['test_labels']),
+          validation_data=([test_features, test_segments], test_labels),
           shuffle=False,
           verbose = 1,
           callbacks = [
               ModelCheckpoint(monitor='val_acc', mode='max', filepath=model_filename, save_best_only=True)
           ])
+
+# モデルの保存
+model.save('./models/saved_model_BERT')
