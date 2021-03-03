@@ -15,10 +15,13 @@ def make_cmt(input_path, output_path):
     output_path : list, shape(３,)
         データセット（csv）の保存先パス
     """
+    # テキストファイルの数を取得
     file_count = 0
     for p in range(3):
-        file_count += sum((len(f) for _, _, f in os.walk(input_path[p])))
+        #file_count += sum((len(f) for _, _, f in os.walk(input_path[p])))
+        file_count += len([name for name in os.listdir(input_path[p]) if name[-4:] == '.txt'])
 
+    # データセット作成
     for p in range(3):
         converted_files_count = 0
         unconverted_files_count = 0
@@ -105,10 +108,13 @@ def make_news(input_path, output_path, output_file_name):
     output_file_name : list, shape(３,)
         作成したcsvの保存ファイル名
     """
+    # テキストファイルの数を取得
     file_count = 0
     for p in range(3):
-        file_count += sum((len(f) for _, _, f in os.walk(input_path[p])))
+        #file_count += sum((len(f) for _, _, f in os.walk(input_path[p])))
+        file_count += len([name for name in os.listdir(input_path[p]) if name[-4:] == '.txt'])
 
+    # データセット作成
     for p in range(3):
         converted_files_count = 0
         unconverted_files_count = 0
