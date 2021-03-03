@@ -18,7 +18,6 @@ def make_cmt(input_path, output_path):
     # テキストファイルの数を取得
     file_count = 0
     for p in range(3):
-        #file_count += sum((len(f) for _, _, f in os.walk(input_path[p])))
         file_count += len([name for name in os.listdir(input_path[p]) if name[-4:] == '.txt'])
 
     # データセット作成
@@ -111,7 +110,6 @@ def make_news(input_path, output_path, output_file_name):
     # テキストファイルの数を取得
     file_count = 0
     for p in range(3):
-        #file_count += sum((len(f) for _, _, f in os.walk(input_path[p])))
         file_count += len([name for name in os.listdir(input_path[p]) if name[-4:] == '.txt'])
 
     # データセット作成
