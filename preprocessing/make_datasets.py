@@ -18,8 +18,10 @@ def make_ds():
 
     file_count = 0
     for p in csv_folder:
-        file_count += sum((len(f) for _, _, f in os.walk(p + '/comments'))) - 1
-    #print(file_count)
+        #file_count += sum((len(f) for _, _, f in os.walk(p + '/comments'))) - 1
+        DIR = p + '/comments'
+        file_count += len([name for name in os.listdir(DIR) if name[-4:] == '.csv'])
+
 
     for j, p in enumerate(csv_folder):
         cols = ['text', 'reply', 'good', 'bad']
