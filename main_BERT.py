@@ -94,7 +94,7 @@ train_features = []
 test_features = []
 for feature in train_features_df['feature']:
     # ID化
-    train_features.append(preprocessing._get_indice(feature, maxlen))
+    train_features.append(preprocessing.get_indice(feature, maxlen))
 train_features = np.array(train_features)
 
 # shape(len(train_features), maxlen)のゼロの行列作成
@@ -102,7 +102,7 @@ train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
 
 for feature in test_features_df['feature']:
     # ID化
-    test_features.append(preprocessing._get_indice(feature, maxlen))
+    test_features.append(preprocessing.get_indice(feature, maxlen))
 test_features = np.array(test_features)
 
 # shape(len(test_features), maxlen)のゼロの行列作成
@@ -133,7 +133,7 @@ model.summary()
 
 
 # コールバック用　チェックポイント保存用
-model_filename = './models/finetuning_checkpoint'
+checkpoint_path = './models/finetuning_checkpoint'
 
 # 学習
 history = model.fit([train_features, train_segments],
@@ -145,7 +145,7 @@ history = model.fit([train_features, train_segments],
           shuffle=False,
           verbose = 1,
           callbacks = [
-              ModelCheckpoint(monitor='val_acc', mode='max', filepath=model_filename, save_best_only=True)
+              ModelCheckpoint(monitor='val_acc', mode='max', filepath=checkpoint_path, save_best_only=True)
           ])
 
 # モデルの保存
