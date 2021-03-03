@@ -28,6 +28,7 @@ def preprocessing_text(text):
     return text
 
 wakati = MeCab.Tagger("-Owakati -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd")
+
 def tokenizer_mecab(text):
     '''
     分かち書き
@@ -63,9 +64,10 @@ def get_max(X):
 # ここでもsentence piece
 sp = spm.SentencePieceProcessor()
 sp.Load('./downloads/bert-wiki-ja/wiki-ja.model')
+
 # 最大単語数分のID化された文を返す関数
 # maxlenがなくてエラーになるので勝手に追加（maxlenは最大単語数か？）
-def _get_indice(feature, maxlen):
+def get_indice(feature, maxlen):
 #def _get_indice(feature):
     # インデックス ０で埋める
     indices = np.zeros((maxlen), dtype = np.int32)
@@ -91,7 +93,7 @@ def _get_indice(feature, maxlen):
     # 最大単語数分のID化された文を返す
     return indices
 
-def _get_indice_pred(feature, maxlen):
+def get_indice_pred(feature, maxlen):
     indices = np.zeros((maxlen), dtype=np.int32)
 
     tokens = []

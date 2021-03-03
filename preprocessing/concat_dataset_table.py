@@ -11,12 +11,9 @@ def concat():
     df_date = pd.DataFrame(date_list, columns = ["date"])
     #print(date_str_list)
 
-
-
     df_date['date'] = df_date["date"].apply(lambda w: pd.to_datetime(w))
 
     print(df_date)
-
 
     trend_f_path = "./associated_data/dataframe_trend.csv"
     df_trend_csv = pd.read_csv(trend_f_path)#, index_col=0, header=False
@@ -61,9 +58,6 @@ def concat():
 
     print(df_date.head(30))
     print(df_date.tail(30))
-
-
-
 
     #日付変換
     df_index_csv['date'] = df_index_csv["date"].apply(lambda w: pd.to_datetime(w))

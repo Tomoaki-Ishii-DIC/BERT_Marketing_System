@@ -6,7 +6,6 @@ def set_config(max_len):
 
     with open(json_path) as f:
         data = json.load(f)
-    #print(json.dumps(data, indent=2))
 
     # 値の変更
     data["max_position_embeddings"] = max_len
