@@ -68,7 +68,7 @@ def make_table():
         text = df_s.loc[i]["text"]
         pre_text = preprocessing.preprocessing_text(text)
         tokenized_text = preprocessing.tokenizer_mecab(pre_text)
-        indice = preprocessing._get_indice(text , maxlen=TEXT_LEN)
+        indice = preprocessing.get_indice(text , maxlen=TEXT_LEN)
         df_text_temp = pd.DataFrame(indice).T
 
         df_news = pd.concat([df_news, df_text_temp], ignore_index=True)#, axis = 1
