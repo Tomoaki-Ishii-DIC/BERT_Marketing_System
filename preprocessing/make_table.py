@@ -48,7 +48,7 @@ def text():
 
 
     #一旦書き出し
-    df_s.to_csv('./datasets/x_train_sorted.csv')#, header=False, index=False
+    #df_s.to_csv('./datasets/x_train_sorted.csv')#, header=False, index=False
 
 
 
@@ -62,9 +62,9 @@ def text():
 
     # ベクトルをdfに
     # ID変換処理(今回はテキストのみ)
-    """
-    TEXT_LEN=5000をどうするか。カウント関数利用を検討。
-    """
+    #"""
+    #TEXT_LEN=5000をどうするか。カウント関数利用を検討。
+    #"""
     #TEXT_LEN=5000
     TEXT_LEN = preprocessing.get_max(df_s["text"])
     print("TEXT_LEN :", TEXT_LEN)
@@ -86,38 +86,79 @@ def text():
     df_news_date = pd.DataFrame(df_s['date'], columns = ["date"])
 
 
+    #print("-3", df_news_date)
     df_news_date['date'] = df_news_date["date"].apply(lambda w: pd.to_datetime(w))
 
 
-    df_news_date = pd.concat([df_news_date, df_news], axis = 1, ignore_index=True)#
+    #print("-2", df_news_date)
+    df_news_date = pd.concat([df_news_date, df_news], axis = 1)#, ignore_index=True
+    #df_news_date = pd.concat([df_news_date, df_news], axis = 1, ignore_index=True)#
+
+    #print(type(df_news_date))
+    #print(df_news_date.columns)
+    #df_news_date.columns = df_news_date.columns.astype(str)
+    #print(df_news_date.columns)
+    #print("-1", df_news_date)
+    # headerの変更
+    #df_news_date.rename(columns={'0': 'date', '1': 'top'})
+    #df_news_date.rename(columns={'0': 'date', '1': 'top'}, inplace=True)
 
 
-    print(df_news_date)
-
+    print("df_news_date", df_news_date)
 
     #一旦書き出し
-    df_news_date.to_csv('./datasets/x_train_ID.csv', index=False)#, header=False, index=False
+    #df_news_date.to_csv('./datasets/x_train_ID.csv', index=False)#, header=False, index=False
+
+    return df_news_date
 
 
-def table():
+def trend():
     csv_path_trend = ("./associated_data/multiTimeline/")
+
+    df_trend = pd.DataFrame([])
 
     count = 0
     for file_name in os.listdir("./associated_data/multiTimeline"):
         if file_name.endswith(".csv"):
-            df_temp = pd.read_csv(csv_path_trend + "/"+ file_name)#, header=None, header=0
+            df_temp = pd.read_csv(csv_path_trend + "/"+ file_name, header=1)#, header=None, header=0
             print(csv_path_trend + "/"+ file_name)
             print(df_temp)
             print(df_temp.columns)
+            #print("df_temp.iloc[:, 1]", df_temp.iloc[:, 1])
+            #df_trend = pd.concat([df_trend, df_temp.iloc[:, 1]], axis = 1)#, ignore_index=True
             if count == 0:
-                df_trend = df_temp
+                df_trend = pd.concat([df_trend, df_temp], axis = 1)#, ignore_index=True
             else:
-                df_trend = pd.concat([df_trend, df_temp], axis = 1, ignore_index=True)
+                df_trend = pd.concat([df_trend, df_temp.iloc[:, 1]], axis = 1)#, ignore_index=True
             count += 1
 
     #一旦書き出し
     print(df_trend)
-    df_trend.to_csv('./associated_data/dataframe_trend.csv', header=False)#, index=False
+    #df_trend.to_csv('./associated_data/dataframe_trend.csv', header=False)#, index=False
+
+    #もう一度読み込み
+    #df_trend_csv = pd.read_csv('./associated_data/dataframe_trend.csv')#, index_col=0
+    #print(df_trend_csv[:]["avex: (日本)"])
+
+
+
+    #print(df_trend_csv)
+    #print(df_trend_csv.columns)
+
+
+    #日付変換
+    print(df_trend['週'])
+    df_trend['週'] = df_trend["週"].apply(lambda w: pd.to_datetime(w))
+
+    print(df_trend)
+
+    #df_trend_csv.to_csv('./associated_data/dataframe_trend.csv', index=False)#, index=False
+
+    return df_trend
+    """
+    #一旦書き出し
+    print(df_trend)
+    #df_trend.to_csv('./associated_data/dataframe_trend.csv', header=False)#, index=False
 
     #もう一度読み込み
     df_trend_csv = pd.read_csv('./associated_data/dataframe_trend.csv')#, index_col=0
@@ -135,14 +176,18 @@ def table():
 
     print(df_trend_csv)
 
-    df_trend_csv.to_csv('./associated_data/dataframe_trend.csv', index=False)#, index=False
+    #df_trend_csv.to_csv('./associated_data/dataframe_trend.csv', index=False)#, index=False
 
+    return df_trend_csv
+    """
 
-
-def concat():
+def concat(df_trend, df_news):
     #日付だけのデータフレームを作成
     """
-    日付を自由に入れられるようにする。
+    データセット作成関数
+    トレンドデータ、テキストデータと指標データを組み合わせて、
+    欠損データの補いや欠損列の削除を行う
+    （日付を自由に入れられるようにしたい。）
     """
     date_list = [datetime(2020, 1, 1, hour=0, minute=0, second=0) + timedelta(days=i) for i in range(397)]
     df_date = pd.DataFrame(date_list, columns = ["date"])
@@ -152,13 +197,14 @@ def concat():
 
     print(df_date)
 
-    trend_f_path = "./associated_data/dataframe_trend.csv"
-    df_trend_csv = pd.read_csv(trend_f_path)#, index_col=0, header=False
-    print(df_trend_csv)
+    #trend_f_path = "./associated_data/dataframe_trend.csv"
+    #df_trend = pd.read_csv(trend_f_path)#, index_col=0, header=False
+    print(df_trend)
 
-    news_f_path = "./datasets/x_train_ID.csv"
-    df_news_csv = pd.read_csv(news_f_path)#, index_col=0
-    print(df_news_csv)
+    #news_f_path = "./datasets/x_train_ID.csv"
+    #df_news = pd.read_csv(news_f_path)#, index_col=0
+    print("df_news", df_news)
+    print("df_news.columns", df_news.columns)
 
     sorted_f_path = "./datasets/x_train_sorted.csv"
     df_s = pd.read_csv(sorted_f_path)#, index_col=0
@@ -170,28 +216,28 @@ def concat():
 
 
     #日付変換
-    df_trend_csv['週'] = df_trend_csv["週"].apply(lambda w: pd.to_datetime(w))
+    df_trend['週'] = df_trend["週"].apply(lambda w: pd.to_datetime(w))
 
 
-    print(type(df_trend_csv.iloc[0]["週"]))
+    print(type(df_trend.iloc[0]["週"]))
     print(type(df_date.iloc[0]["date"]))
 
 
     # 結合用コード
 
     #Googleトレンド
-    columns_list = df_trend_csv.columns.values
+    columns_list = df_trend.columns.values
 
     for c in range(1, len(columns_list)):
         df_date[columns_list[c]] = ''
 
-    for i in range(len(df_trend_csv)):
+    for i in range(len(df_trend)):
     #for i in range(100):
         for j in range(len(df_date)):
         #for j in range(30):
-            if df_trend_csv.iloc[i]["週"] == df_date.iloc[j]["date"]:
+            if df_trend.iloc[i]["週"] == df_date.iloc[j]["date"]:
                 for f in range(1, len(columns_list)):
-                    df_date.loc[j, columns_list[f]] = df_trend_csv.loc[i, columns_list[f]]
+                    df_date.loc[j, columns_list[f]] = df_trend.loc[i, columns_list[f]]
 
     print(df_date.head(30))
     print(df_date.tail(30))
@@ -228,7 +274,7 @@ def concat():
     print("n_index_feature", n_index_feature)
 
     #一旦書き出し
-    df_date.to_csv('./associated_data/dataframe_trend_and_index.csv')#, header=False, index=False
+    #df_date.to_csv('./associated_data/dataframe_trend_and_index.csv')#, header=False, index=False
 
 
     # 欠損値だらけなので埋める
@@ -246,31 +292,32 @@ def concat():
     # テキストを結合する
 
     #日付変換
-    df_news_csv['0'] = df_news_csv['0'].apply(lambda w: pd.to_datetime(w))
+    #df_news['0'] = df_news['0'].apply(lambda w: pd.to_datetime(w))
+    df_news['date'] = df_news['date'].apply(lambda w: pd.to_datetime(w))
 
 
-    #print(type(df_news_csv.iloc[0][0]))
+    #print(type(df_news.iloc[0][0]))
     #print(type(df_date.iloc[0]["date"]))
 
     # 結合用コード
 
     #IDベクトル
-    columns_list = df_news_csv.columns.values
+    columns_list = df_news.columns.values
     columns_list = np.append(columns_list, 'label')
 
     print(columns_list)
     print(df_date.columns.values)
-    #df_news_csv
+    #df_news
 
     for c in range(1, len(columns_list)):
         df_date[columns_list[c]] = ''
     #print(df_date)
 
-    for i in range(len(df_news_csv)):
+    for i in range(len(df_news)):
     #for i in range(100):
-        d_y = df_news_csv.iloc[i][0].year
-        d_m = df_news_csv.iloc[i][0].month
-        d_d = df_news_csv.iloc[i][0].day
+        d_y = df_news.loc[i]['date'].year
+        d_m = df_news.loc[i]['date'].month
+        d_d = df_news.loc[i]['date'].day
         d_ymd = str(d_y)+'/'+str(d_m)+'/'+str(d_d)
         date_t=pd.to_datetime(d_ymd).date()
         for j in range(len(df_date)):
@@ -280,9 +327,9 @@ def concat():
                     if str(df_date.columns.values[f+6]) == 'label':
                         df_date.loc[j, 'label'] = df_s.loc[i,'label']
                     else:
-                        df_date.iloc[j, f+6] = df_news_csv.iloc[i][int(df_date.columns.values[f+6])]
+                        df_date.iloc[j, f+6] = df_news.iloc[i][int(df_date.columns.values[f+6])]
                         #print(df_date.iloc[j][f+7])
-                        #print(df_news_csv.iloc[i][int(df_date.columns.values[f+7])])
+                        #print(df_news.iloc[i][int(df_date.columns.values[f+7])])
 
     #print(df_date.head(30))
     print(df_date.tail(100))
@@ -306,7 +353,9 @@ def concat():
     df_label_col = df_drop.loc[:,'label'].astype('int')
 
     df_drop_index = pd.concat([df_index_col,df_label_col], axis=1)
-    df_drop_index.to_csv('./associated_data/dataframe_all_index.csv', index=False)#, header=False, index=False
+    #df_drop_index.to_csv('./associated_data/dataframe_all_index.csv', index=False)#, header=False, index=False
 
-    df_drop_text = df_drop.astype({'label':int})
-    df_drop_text.iloc[:,n_index_feature:].to_csv('./associated_data/dataframe_all_text.csv', index=False)#, header=False, index=False
+    df_drop_text = df_drop.astype('int')#.astype({'label':int})
+    #df_drop_text.iloc[:,n_index_feature:].to_csv('./associated_data/dataframe_all_text.csv', index=False)#, header=False, index=False
+
+    return df_drop_index, df_drop_text.iloc[:,n_index_feature:]
