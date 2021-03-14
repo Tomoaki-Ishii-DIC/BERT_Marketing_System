@@ -1,32 +1,25 @@
-#import types
-#import sys
 import pandas as pd
-#import sentencepiece as spm
-#import logging
 import numpy as np
 import os
 import json
 import openpyxl
 
-#from keras import utils
 from keras.models import load_model
 from keras_bert import load_trained_model_from_checkpoint
 from keras_bert import get_custom_objects
-#from sklearn.metrics import classification_report, confusion_matrix
 from keras import Input, Model
 
 from preprocessing import preprocessing
-#from sklearn import preprocessing as sk_preprocessing
 
 
 # モデルの読み込み・作成
 model_path = './models/saved_model_BERT'
 model = load_model(model_path, custom_objects=get_custom_objects())
 
-# model = Model(inputs=a, outputs=b) として"self_Attention"も出すようにする。
+# outputs=[model.output,model.get_layer]とすることで"self_Attention"も出力できるようにする
 model = Model(inputs=model.input,
-            outputs=[model.output,
-            model.get_layer('Encoder-12-MultiHeadSelfAttention').output])
+              outputs=[model.output,
+                        model.get_layer('Encoder-12-MultiHeadSelfAttention').output])
 
 # ローカルJSONファイルの読み込み
 json_path = "./downloads/bert-wiki-ja_config/bert_finetuning_config_v1.json"
@@ -35,12 +28,10 @@ json_path = "./downloads/bert-wiki-ja_config/bert_finetuning_config_v1.json"
 with open(json_path) as f:
     data = json.load(f)
 maxlen = data["max_position_embeddings"]
-#print(maxlen)
 
 # csvファイルの数を取得
 DIR = './datasets/pred_labeling'
 file_count = len([name for name in os.listdir(DIR) if name[-4:] == '.csv'])
-#print(file_count)
 
 
 # excelファイルの準備
@@ -89,8 +80,8 @@ for i in range(file_count):
         test_segments = np.zeros(
             (len(test_features), maxlen), dtype=np.float32)
 
-        # model = Model(inputs=a, outputs=b)で推測とattentionを出力するようにしているため、
-        # 出力は２次元のリスト predict[0][0]
+        # 推測値とattentionを出力するようにしているため、
+        # 出力は２次元のリスト predict[a][b]
         predicted = model.predict([test_features, test_segments])
 
         # 推測のみ変数へ保管
@@ -116,9 +107,8 @@ for i in range(file_count):
         good_ratio_list.append(good_ratio)
 
         # Attentionの抜き出し
-        # model = Model(inputs=a, outputs=b) としてAttentionも出すようにしてあるため、
-        # predicted[1]はAttention shape(1, maxlen ,BERT_DIM)
-        # 平均だと値が小さくなるため最大値を取得
+        # predictでAttentionも出すようにしてあり、predicted[1]はAttention shape(1, maxlen ,BERT_DIM)
+        # 平均してしまうと値が小さくなりすぎるため最大値を取得
         weights = [w.max() for w in predicted[1][0]]
 
         # トークン(単語)とトークンに対応するAttention（最大値）からなるデータフレーム作成 shape(2, maxlen)

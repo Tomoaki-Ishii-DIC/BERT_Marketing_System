@@ -29,6 +29,13 @@ import keras.backend as K #?
 
 
 def create_model():
+    """
+    BERTのモデルを作成する関数
+
+    Parameters
+    ----------------
+
+    """
     config_file = os.path.join('./downloads/bert-wiki-ja_config', 'bert_finetuning_config_v1.json')
     checkpoint_file = os.path.join('./downloads/bert-wiki-ja', 'model.ckpt-1400000')
 
