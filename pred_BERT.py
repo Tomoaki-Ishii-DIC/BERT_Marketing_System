@@ -30,8 +30,16 @@ with open(json_path) as f:
 maxlen = data["max_position_embeddings"]
 
 # csvファイルの数を取得
-DIR = './datasets/pred_labeling'
-file_count = len([name for name in os.listdir(DIR) if name[-4:] == '.csv'])
+csv_path_fine_train = ("./datasets_csv/finetuning/train")
+csv_path_fine_test = ("./datasets_csv/finetuning/test")
+csv_path_pred_labeling = ("./datasets_csv/pred_labeling")
+
+csv_folder = [csv_path_fine_train , csv_path_fine_test, csv_path_pred_labeling]
+
+file_count = 0
+for p in csv_folder:
+    dir = p + '/comments'
+    file_count += len([name for name in os.listdir(dir) if name[-4:] == '.csv'])
 
 
 # excelファイルの準備
@@ -54,14 +62,18 @@ wb.save(excel_file)
 y_train = []
 for i in range(file_count):
     n_file = str(i+1).zfill(3)
-    file_name = "features_" + n_file + ".csv"
-    f_path = ("./datasets/pred_labeling/" + file_name)
+    #file_name = "features_" + n_file + ".csv"
+    file_name = "comment_dataset_" + n_file + ".csv"
+    f_path = ("./datasets_csv/pred_labeling/comments/" + file_name)
 
     if not os.path.isfile(f_path):
         continue
-    df_tests_features = pd.read_csv(f_path)
+    df_tests_features = pd.read_csv(f_path, index_col=0)
 
     print("File Name:{}の処理を開始しました。".format(file_name))
+
+    #print("入力確認 df_tests_features", df_tests_features)
+    print("入力確認 df_tests_features.shape", df_tests_features.shape)
 
     # 出力用データフレーム作成
     df_sheet = pd.DataFrame()
@@ -70,7 +82,8 @@ for i in range(file_count):
     pred_list = []
     good_ratio_list = []
     for j in range(len(df_tests_features)):
-        feature = df_tests_features.loc[j]['feature']
+        #feature = df_tests_features.loc[j]['feature']
+        feature = df_tests_features.loc[j]['text']
 
         test_features = []
         indices, tokens = preprocessing.get_indice_pred(feature, maxlen)
@@ -157,6 +170,11 @@ for i in range(file_count):
         y_train.append(0)
 
     print("File Name:{}の処理が完了しました。".format(file_name))
+
+    #print("pred_list: ", pred_list)
+    print("pred_list.shape: ", pred_list.shape)
+    #print("good_ratio_list: ", good_ratio_list)
+    #print()
 
 y_train_df = pd.DataFrame(y_train)
 y_train_df.columns = ["label"]
