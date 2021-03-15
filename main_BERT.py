@@ -10,11 +10,9 @@ from preprocessing import preprocessing
 from preprocessing import make_datasets
 from preprocessing import change_config
 
-
 from keras.utils import np_utils
 from keras import utils
 import numpy as np
-
 
 import keras
 from keras_bert import load_trained_model_from_checkpoint
@@ -56,20 +54,12 @@ def create_model():
 
     return model
 
-
-train_dir = './datasets/finetuning/train'
-test_dir = './datasets/finetuning/test'
-
-
-# pandasでcsvの学習データとテストデータを読み込む
-train_features_df = pd.read_csv(train_dir + '/features.csv')
-train_labels_df = pd.read_csv(train_dir + '/labels.csv')
-test_features_df = pd.read_csv(test_dir + '/features.csv')
-test_labels_df = pd.read_csv(test_dir + '/labels.csv')
+# データセットの作成
+train_features_df, test_features_df, train_labels_df, test_labels_df = make_datasets.make_ds()
 
 # 最大行の取得
-maxlen_train = preprocessing.get_max(train_features_df['feature'])
-maxlen_test = preprocessing.get_max(test_features_df['feature'])
+maxlen_train = preprocessing.get_max(train_features_df)
+maxlen_test = preprocessing.get_max(test_features_df)
 print("maxlen_train", maxlen_train)
 print("maxlen_test", maxlen_test)
 
@@ -89,8 +79,8 @@ class_count = 2
 
 train_dum = pd.get_dummies(train_labels_df)
 test_dum = pd.get_dummies(test_labels_df)
-train_labels = np.array(train_dum[['label_positive', 'label_negative']])
-test_labels = np.array(test_dum[['label_positive', 'label_negative']])
+train_labels = np.array(train_dum[['positive', 'negative']])
+test_labels = np.array(test_dum[['positive', 'negative']])
 
 print("train_labels　get_dummies :", train_labels.shape)
 print("test_labels　get_dummies :", test_labels.shape)
@@ -99,7 +89,7 @@ print("test_labels　get_dummies :", test_labels.shape)
 
 train_features = []
 test_features = []
-for feature in train_features_df['feature']:
+for feature in train_features_df:
     # ID化
     train_features.append(preprocessing.get_indice(feature, maxlen))
 train_features = np.array(train_features)
@@ -107,7 +97,7 @@ train_features = np.array(train_features)
 # shape(len(train_features), maxlen)のゼロの行列作成
 train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
 
-for feature in test_features_df['feature']:
+for feature in test_features_df:
     # ID化
     test_features.append(preprocessing.get_indice(feature, maxlen))
 test_features = np.array(test_features)
@@ -120,7 +110,7 @@ print("test_features :", test_features.shape)
 
 
 # データセットの作成
-make_datasets.make_ds()
+#make_datasets.make_ds()
 
 # パラメータ
 SEQ_LEN = maxlen
