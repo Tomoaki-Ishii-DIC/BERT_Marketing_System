@@ -106,7 +106,6 @@ for i in range(file_count):
         else:
             pred_list.append([-1])
 
-
         # 高評価度算出（コメントにつけられたgoodとbadの比率）
         good = df_tests_features.loc[j]['good']
         bad = df_tests_features.loc[j]['bad']
@@ -174,11 +173,13 @@ for i in range(file_count):
     #print("pred_list: ", pred_list)
     print("pred_list.shape: ", pred_list.shape)
     #print("good_ratio_list: ", good_ratio_list)
-    #print()
 
 y_train_df = pd.DataFrame(y_train)
 y_train_df.columns = ["label"]
 y_train_df.to_csv("./datasets/y_train.csv")
 print("y_train: ", y_train)
 
-print("処理が完了しました。作成されたy_trainとattentionを確認してください。")
+X_train_df = pd.read_csv("./datasets_csv/pred_labeling/news/news_dataset.csv")
+X_train_df.to_csv("./datasets/X_train.csv", index=False)
+
+print("処理が完了しました。作成されたX_train,y_trainおよびattentionを確認してください。")
