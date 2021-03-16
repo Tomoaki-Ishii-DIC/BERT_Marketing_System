@@ -39,12 +39,12 @@ def text():
 
     # データセット作成
     df = pd.concat([df_news, df_label], axis=1)
-    print(df)
+    print("df", df)
 
 
     # ソートは他のデータと結合する直前に行う（ラベルとずれてしまうため）
     df_s = df.sort_values('date')
-    print(df_s)
+    print("df_s", df_s)
 
 
     #一旦書き出し
@@ -69,7 +69,7 @@ def text():
     TEXT_LEN = preprocessing.get_max(df_s["text"])
     print("TEXT_LEN :", TEXT_LEN)
 
-    df_news = pd.DataFrame([])
+    df_news_temp = pd.DataFrame([])
 
     for i in range(len(df_s)):
         text = df_s.loc[i]["text"]
@@ -78,20 +78,28 @@ def text():
         indice = preprocessing.get_indice(text , maxlen=TEXT_LEN)
         df_text_temp = pd.DataFrame(indice).T
 
-        df_news = pd.concat([df_news, df_text_temp], ignore_index=True)#, axis = 1
+        df_news_temp = pd.concat([df_news_temp, df_text_temp], ignore_index=True)#, axis = 1
 
-    print(df_news)
+    print("df_news_temp", df_news_temp)
 
 
     df_news_date = pd.DataFrame(df_s['date'], columns = ["date"])
+    df_news_date = df_news_date.reset_index(drop=True)
+    print("df_news_date", df_news_date)
+    #df_news_date = df_s['date']
+    #df_news_date.columns = ['date']
+    #print("df_news_date", df_news_date)
 
+    df_news_label = pd.DataFrame(df_s['label'], columns = ["label"])
+    df_news_label = df_news_label.reset_index(drop=True)
+    print("df_news_date", df_news_label)
 
     #print("-3", df_news_date)
     df_news_date['date'] = df_news_date["date"].apply(lambda w: pd.to_datetime(w))
 
 
     #print("-2", df_news_date)
-    df_news_date = pd.concat([df_news_date, df_news], axis = 1)#, ignore_index=True
+    df_news_date = pd.concat([df_news_date, df_news_temp, df_news_label], axis = 1)#, ignore_index=True
     #df_news_date = pd.concat([df_news_date, df_news], axis = 1, ignore_index=True)#
 
     #print(type(df_news_date))
@@ -104,6 +112,7 @@ def text():
     #df_news_date.rename(columns={'0': 'date', '1': 'top'}, inplace=True)
 
 
+    print("df_news_date.columns", df_news_date.columns)
     print("df_news_date", df_news_date)
 
     #一旦書き出し
@@ -206,9 +215,9 @@ def concat(df_trend, df_news):
     print("df_news", df_news)
     print("df_news.columns", df_news.columns)
 
-    sorted_f_path = "./datasets/x_train_sorted.csv"
-    df_s = pd.read_csv(sorted_f_path)#, index_col=0
-    print(df_s)
+    #sorted_f_path = "./datasets/x_train_sorted.csv"
+    #df_s = pd.read_csv(sorted_f_path)#, index_col=0
+    #print(df_s)
 
     index_f_path = "./associated_data/dataframe_indicator_index.csv"
     df_index_csv = pd.read_csv(index_f_path)#, index_col=0
@@ -300,34 +309,61 @@ def concat(df_trend, df_news):
     #print(type(df_date.iloc[0]["date"]))
 
     # 結合用コード
+    # 単純にconcat
+    print("単純にconcat")
+    print("df_date", df_date.shape)
+    print("df_date", df_date)
+    print("df_news", df_news.shape)
+    print("df_news", df_news)
+
+
+
 
     #IDベクトル
     columns_list = df_news.columns.values
-    columns_list = np.append(columns_list, 'label')
+    #columns_list = np.append(columns_list, 'label')
 
     print(columns_list)
     print(df_date.columns.values)
+
+    text_tabel_len = len(df_news.columns.values)
+    index_tabel_len = len(df_date.columns.values)
+    print("text_tabel_len", text_tabel_len)
+    print("index_tabel_len", index_tabel_len)
     #df_news
 
-    for c in range(1, len(columns_list)):
+    for c in range(1, text_tabel_len):
         df_date[columns_list[c]] = ''
     #print(df_date)
 
+    print("df_date ゼロ埋め", df_date.shape)
+    print("df_date ゼロ埋め", df_date)
+
     for i in range(len(df_news)):
-    #for i in range(100):
         d_y = df_news.loc[i]['date'].year
         d_m = df_news.loc[i]['date'].month
         d_d = df_news.loc[i]['date'].day
-        d_ymd = str(d_y)+'/'+str(d_m)+'/'+str(d_d)
+        #d_y = df_news.loc[i]['date'].dt.year#.astype(str)
+        #d_m = df_news.loc[i]['date'].dt.month#.astype(str)
+        #d_d = df_news.loc[i]['date'].dt.day#.astype(str)
+        d_ymd = str(d_y)+'/'+str(d_m).zfill(2)+'/'+str(d_d).zfill(2)
+        #d_ymd = str(d_y[0])+'/'+str(d_m[0]).zfill(2)+'/'+str(d_d[0]).zfill(2)
         date_t=pd.to_datetime(d_ymd).date()
+
+        # +6は変更必要では？テーブルのサイズを取得していれる。
         for j in range(len(df_date)):
         #for j in range(30):
             if date_t == df_date.iloc[j]["date"]:
-                for f in range(1, len(columns_list)):
-                    if str(df_date.columns.values[f+6]) == 'label':
-                        df_date.loc[j, 'label'] = df_s.loc[i,'label']
+                for f in range(1, text_tabel_len):
+                    ##if str(df_date.columns.values[f+index_tabel_len-1]) is not 'label':
+                    #df_date.iloc[j, f+index_tabel_len-1] = df_news.iloc[i][int(df_date.columns.values[f+index_tabel_len-1])]
+                    #    #print(df_date.iloc[j][f+7])
+                    #    #print(df_news.iloc[i][int(df_date.columns.values[f+7])])
+
+                    if str(df_date.columns.values[f+index_tabel_len-1]) == 'label':
+                        df_date.loc[j, 'label'] = df_news.loc[i,'label']
                     else:
-                        df_date.iloc[j, f+6] = df_news.iloc[i][int(df_date.columns.values[f+6])]
+                        df_date.iloc[j, f+index_tabel_len-1] = df_news.iloc[i][int(df_date.columns.values[f+index_tabel_len-1])]
                         #print(df_date.iloc[j][f+7])
                         #print(df_news.iloc[i][int(df_date.columns.values[f+7])])
 
