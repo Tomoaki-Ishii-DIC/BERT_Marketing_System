@@ -1,50 +1,34 @@
 import pandas as pd
 import numpy as np
-
-# multivariate data preparation
-#from numpy import array
-#from numpy import hstack
-
-#from numpy import array
-#from numpy import hstack
-#from numpy import insert,delete
-
+import os
+import sys
 import os
 
+from keras_bert import load_trained_model_from_checkpoint
+
+import keras
+from keras.models import Model
+from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from keras.optimizers import Adam
+
 from keras.models import Sequential
-from keras.layers import Activation, Dense
-from keras.layers.recurrent import LSTM
-from keras.layers import Dropout
-from keras.preprocessing import sequence
-from keras.optimizers import RMSprop
+from keras.layers import Dense, LSTM, Dropout#, Activation
+#from keras.layers.recurrent import LSTM
+#from keras.layers import LSTM
+#from keras.layers import Dropout
+#from keras.preprocessing import sequence
+#from keras.optimizers import RMSprop
 
-#from keras.preprocessing.sequence import TimeseriesGenerator
-#from keras.models import Sequential
-#from keras.layers import Dense
-from keras.layers import LSTM
-from keras.callbacks import EarlyStopping
-#import matplotlib.pyplot as plt
+#from keras.utils import np_utils
+#from keras import utils
 
+#import keras.backend as K #?
 
 from preprocessing import make_table
-#from preprocessing import make_table_text
-#from preprocessing import make_table_trend
-#from preprocessing import concat_dataset_table
+from preprocessing import preprocessing
+from preprocessing import make_datasets
+from preprocessing import change_config
 
-# デーブルの作成（現行ではcsv出力。今後、dfの受け渡しに変更予定。）
-df_text = make_table.text()
-df_text
-df_text["date"]
-
-df_trend = make_table.trend()
-df_trend
-
-#concat_dataset_table.concat()
-#make_table.concat()
-df_table_index, df_table_text = make_table.concat(df_trend, df_text)
-
-df_table_index
-df_table_text
 
 def make_timestep_dataset(dataset, n_steps):
     """
@@ -79,42 +63,15 @@ def make_timestep_dataset(dataset, n_steps):
     return X_ndarray, y_ndarray
 
 
-#新しい関数の出力を利用
-df_index = df_table_index
-df_text = df_table_text
 
-#BERT(Train)
-import sys
-import os
-import re
-import codecs
-import sentencepiece as spm
+def create_model_BERT():
+    """
+    BERTのモデルを作成する関数
 
-import pandas as pd
+    Parameters
+    ----------------
 
-from preprocessing import preprocessing
-from preprocessing import make_datasets
-from preprocessing import change_config
-
-
-from keras.utils import np_utils
-from keras import utils
-import numpy as np
-
-
-import keras
-from keras_bert import load_trained_model_from_checkpoint
-from keras_bert.layers import MaskedGlobalMaxPool1D
-from keras import Input, Model
-from keras.models import Model
-from keras.layers import Dense, Dropout, LSTM, Bidirectional, Flatten, GlobalMaxPooling1D
-from keras.layers import Dense,Input,Flatten,concatenate,Dropout,Lambda
-from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
-from keras.optimizers import Adam
-import keras.backend as K #?
-
-
-def create_model():
+    """
     #config_file = os.path.join('./downloads/bert-wiki-ja_config', 'bert_finetuning_config_v1.json')
     #checkpoint_file = os.path.join('./downloads/bert-wiki-ja', 'model.ckpt-1400000')
     config_file = os.path.join('./downloads/bert-wiki-ja_config', 'bert_lstm_config_v1.json')
@@ -138,186 +95,130 @@ def create_model():
     return model
 
 
-print(df_text.iloc[:, :-1])
-print(df_text.iloc[:, -1])
+# モデルの作成
+def create_model_LSTM():
+    """
+    LSTMのモデルを作成する関数
 
+    Parameters
+    ----------------
+
+    """
+    model = Sequential()
+
+    model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
+    model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
+    model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
+    model.add(Dense(2, activation="softmax"))
+
+    model.compile(loss='binary_crossentropy',
+                  optimizer='adam',
+                  metrics = ['accuracy'])
+
+    return model
+
+
+# デーブルの作成（トレンドデータ、テキスト）
+df_trend = make_table.trend()
+df_news = make_table.text()
+print("ensemble df_trend", df_trend)
+print("ensemble df_text", df_news.columns)
+print("ensemble df_text", df_news)
+
+#　データセットの作成（トレンド＋指標データ、テキスト）
+df_index, df_text = make_table.concat(df_trend, df_news)
+
+print("ensemble df_index", df_index)
+print("ensemble df_text.columns", df_text.columns)
+print("ensemble df_text", df_text)
+
+#新しい関数の出力を利用
+#df_index = df_table_index
+#df_text = df_table_text
+
+##########　BERT(Train)　##########
+
+# validationデータの比率
 VAL_SPLIT = 0.3
 
+# trainデータのサンプル数の計算
 n_sample = len(df_text)
-print(n_sample)
 val_samples = int(n_sample*VAL_SPLIT)
 train_samples = int(n_sample-val_samples)
 
-print(train_samples)
-#print(val_samples)
-
-#512対応
-# 今は７とわかっているが、実際はその数値をどう取得するのか
-#make_table.table()からかえす？
-# １０についてもtrainとtestの比率を使う必要がある→train_samples
-#train_features = np.array(df_text.iloc[:10, 7:7+512])
-#test_features = np.array(df_text.iloc[10:, 7:7+512])
-
-"""
-train_head = np.array(df_text.iloc[:train_samples, :+256])
-train_tail = np.array(df_text.iloc[:train_samples, -256:])
-test_head = np.array(df_text.iloc[train_samples:, :+256])
-test_tail = np.array(df_text.iloc[train_samples:, -256:])
-
-train_features = np.concatenate([train_head, train_tail], axis=1)
-test_features = np.concatenate([test_head, test_tail], axis=1)
-
-print("train_features", train_features.shape)
-print("test_features", test_features.shape)
-"""
-# ↑一文一文みないと
-print("df_text", df_text.shape)
-
-#print("df_text[t]", df_text.iloc[0, :])
-"""
-for t in range(len(df_text)):
-    #print(df_text.iloc[t, :])
-    num_count = df_text.iloc[t, :].value_counts()
-    #print(num_count)#.sum()
-    token_count = (df_text.iloc[t, :] > 0.0).sum()
-    #print("zero_count", token_count)#.sum()
-    if token_count > 512:
-        print("head", df_text.iloc[t, :256])
-        print("tail", df_text.iloc[t, token_count-256:token_count+2])
-"""
-#df_new = pd.DataFrame(index=df.index, columns=[])
-#df_features = pd.DataFrame()
-#df_features = pd.DataFrame(columns=range(1, 513))
-
-
-
-# サイズはBERTモデルの最大サイズ５１２に固定する
+#サイズはBERTモデルの最大サイズ５１２に固定する
 maxlen=512
 
+#テキストデータを入れるために使う空のテーブルを用意
 ndarray_features = np.empty((len(df_text), maxlen))
-print("ndarray_features", ndarray_features.shape)
-print("ndarray_features\n", ndarray_features)
 
+# ラベルもカウントしてないか？
 #一文ずつ抜き出して５１２を超えていたらHeadとTailだけ抜き出して結合する
 for t in range(len(df_text)):
-    #for col in range(len(df_text.iloc[t, :])-1, , -1)range():
     token_len = len(df_text.iloc[t, :])
-    print("token_len", token_len)
     zero_count = 0
     for col in reversed(range(len(df_text.iloc[t, :])-1)):
-        #print("col", col)
-        #print(df_text.iloc[t, :])
         if df_text.iloc[t, col] == 0.0:
             zero_count += 1
         else:
             break
-    print("zero_count", zero_count)
-    print("token_len-zero_count", token_len-zero_count)
-        #print(num_count)#.sum()
-        #token_count = (df_text.iloc[t, :] > 0.0).sum()
-        #print("zero_count", token_count)#.sum()
+
     token_count = token_len - zero_count - 1
     if token_count > 512:
         ndarray_head = np.array(df_text.iloc[t, :256])
         ndarray_tail = np.array(df_text.iloc[t, token_count-256:token_count])
-        print("ndarray_head", ndarray_head.shape)
-        print("ndarray_tail",  ndarray_tail.shape)
         df_resized = np.concatenate([ndarray_head, ndarray_tail])#, axis=1
-        #df_resized = pd.concat([df_head, df_tail], axis=1)#, axis=1
     else:
         df_resized = np.array(df_text.iloc[t, :512])
 
-    print("df_resized",  df_resized.shape)
-    print("ndarray_features",  ndarray_features.shape)
-    #ndarray_features = np.concatenate([ndarray_features, df_resized])
     ndarray_features[t] = df_resized
 
-print("ndarray_features", ndarray_features.shape)
-print("ndarray_features\n", ndarray_features.astype(int))
+print("BERT dataset: ", ndarray_features.shape)
 
 # train_test_split
 train_features = ndarray_features[:train_samples, :]
 test_features = ndarray_features[train_samples:, :]
 
-print("train_features", train_features.shape)
-print("test_features", test_features.shape)
+print("train_features: ", train_features.shape)
+print("test_features: ", test_features.shape)
 
 
-
-"""
-#df_text.iloc[:train_samples, :+256]
-
-train_head = np.array(df_text.iloc[:train_samples, :+256])
-train_tail = np.array(df_text.iloc[:train_samples, -256:])
-test_head = np.array(df_text.iloc[train_samples:, :+256])
-test_tail = np.array(df_text.iloc[train_samples:, -256:])
-
-print("train_head", train_head.shape)
-print("train_tail", train_tail.shape)
-print("test_head", test_head.shape)
-print("test_tail", test_tail.shape)
-
-train_features = np.concatenate([train_head, train_tail], axis=1)
-test_features = np.concatenate([test_head, test_tail], axis=1)
-
-print("train_features", train_features.shape)
-print("test_features", test_features.shape)
-"""
-
-
-# labelをワンホット表現に変形
-ndarray_labels = df_text.iloc[:, -1]
+# labelをワンホット表現に変換
+#ndarray_labels = df_text.iloc[:, -1]
+ndarray_labels = df_text.loc[:]['label']
 labels_one_hot = np.identity(2)[ndarray_labels]
-print("labels_one_hot", labels_one_hot)
 train_labels = labels_one_hot[:train_samples]
 test_labels = labels_one_hot[train_samples:]
-print("train_features", train_features)
-print("train_labels", train_labels)
-print("test_features", test_features)
-print("test_labels", test_labels)
 
+print("train_labels: ", train_labels.shape)
+print("test_labels: ", test_labels.shape)
 
 train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
 test_segments = np.zeros((len(test_features), maxlen), dtype = np.float32)
 
-print(train_features.shape)
-print(train_segments.shape)
-print(train_labels.shape)
-print(test_features.shape)
-print(test_segments.shape)
-print(test_labels.shape)
-
-
-# データセットの作成
-#make_datasets.make_ds()
 
 # パラメータ
 SEQ_LEN = maxlen
 BATCH_SIZE = 5
 BERT_DIM = 768
 LR = 1e-4
-
-# 学習回数
 EPOCH = 3#20
 
 # 設定の変更
 change_config.set_config(SEQ_LEN)
 
 # モデルの作成
-model = create_model()
-model.summary()
+model_BERT = create_model_BERT()
+model_BERT.summary()
 
-train_features.shape
 
-# コールバック用　チェックポイント保存用
+# コールバック用（チェックポイント保存先）
 checkpoint_path = './models/finetuning_checkpoint_2'
 
-
 # 学習
-history = model.fit([train_features, train_segments],
+history = model_BERT.fit([train_features, train_segments],
           train_labels,
-          epochs = EPOCH,#1,#3,
-          #epochs = EPOCH,
+          epochs = EPOCH,
           batch_size = BATCH_SIZE,
           validation_data=([test_features, test_segments], test_labels),
           shuffle=False,
@@ -327,69 +228,45 @@ history = model.fit([train_features, train_segments],
           ])
 
 # モデルの保存
-model.save('./models/saved_model_BERT_part2')
+model_BERT.save('./models/saved_model_BERT_part2')
 
+##########　LSTM(Train)　##########
 
-#LSTM(Train)
-
-# choose a number of time steps
+# タイムステップ数
 n_steps = 3
-#split_rate = 0.3
 
-#dataset = np.array(df.iloc[:, 1:])
 dataset = np.array(df_index)
-print("dataset.shape", dataset.shape)
 
-# convert into input/output
+print("LSTM dataset: ", dataset.shape)
 
+# タイムステップを組み込んだLSTM用データセットの作成
 X, y = make_timestep_dataset(dataset, n_steps)
-##X, y = make_timestep_dataset(dataset, n_steps)
 
-print(X.shape, y.shape)
-#print(X)
-print(y)
-#print(type(y[0]))
+print("X: ", X.shape)
+print("y: ", y.shape)
 
-
+# labelをワンホット表現に変換
 y_one_hot = np.identity(2)[y]
-y_one_hot
 
+print("y_one_hot: ", y_one_hot.shape)
+
+# パラメータ
 BATCHSIZE = 3
 EPOCHS = 50
-#VAL_SPLIT = 0.3#上に移動
+#VAL_SPLIT = 0.3#BERTと共通
 
-model = Sequential()
 
-model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
-model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2, return_sequences=True))
-model.add(LSTM(128, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(2, activation="softmax"))
+# モデルの作成
+model_LSTM = create_model_LSTM()
 
-model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics = ['accuracy'])
-
-split_rate = 0.7
+split_rate = 1 - VAL_SPLIT
 split = int(X.shape[0]*split_rate)
 
 print("Split rate: ", split_rate)
 print("Train_split: ", split)
 print("Val_split: ", X.shape[0]-split)
 
-#X_train = X[:split, :]
-#X_test = X[split:, :]
-#y_train = y[:split]
-#y_test = y[split:]
-#print(X_train.shape)
-#print(X_test.shape)
-#print(y_train.shape)
-#print(y_test.shape)
-
-
 early_stopping = EarlyStopping(monitor='val_loss', mode='auto', patience=0)
-history = model.fit(X, y_one_hot, batch_size = BATCHSIZE, epochs = EPOCHS, validation_split=0.3, callbacks=[early_stopping])
-#history = model.fit(X_train, y_train, batch_size = BATCHSIZE, epochs = EPOCHS)
-#modelName = model.__class__.__name__
+history = model_LSTM.fit(X, y_one_hot, batch_size = BATCHSIZE, epochs = EPOCHS, validation_split=VAL_SPLIT, callbacks=[early_stopping])
 
-
-model.save('./models/saved_model_LSTM')
+model_LSTM.save('./models/saved_model_LSTM')
