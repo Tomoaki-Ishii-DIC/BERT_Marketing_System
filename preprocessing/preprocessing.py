@@ -34,7 +34,7 @@ def preprocessing_text(text):
     return text
 
 
-def tokenizer_mecab(text, wakati):
+def tokenizer_mecab(text):
     """
     テキストを分かち書きに変換する関数
 
@@ -45,6 +45,7 @@ def tokenizer_mecab(text, wakati):
     wakati : Mecab Instance
         Mecabの分かち書きインスタンス
     """
+    wakati = MeCab.Tagger("-Owakati -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd")
     words = wakati.parse(text).split()
 
     return words
@@ -59,15 +60,13 @@ def get_max(X):
     X : str, dataframe shape(n_samples,1)
         ニュースコメントをまとめたデータフレーム
     """
-    wakati = MeCab.Tagger("-Owakati -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd")
-
     numbers = []
     for feature in X:
         #features_number = get_numbers_indice(feature)
         tokens = []
         tokens.append('[CLS]')
         pre_text = preprocessing_text(feature)#追加
-        tokenized_text = tokenizer_mecab(pre_text, wakati)#追加
+        tokenized_text = tokenizer_mecab(pre_text)#追加
         tokens.extend(tokenized_text)#追加
         #tokens.extend(sp.encode_as_pieces(feature))# sentence piece
         tokens.append('[SEP]')
@@ -78,9 +77,6 @@ def get_max(X):
     max_token_num = max(numbers)
 
     return max_token_num
-
-
-
 
 
 def get_indice(feature, maxlen):
@@ -94,9 +90,6 @@ def get_indice(feature, maxlen):
     maxlen : int
         最大トークン数
     """
-#def _get_indice(feature):
-    wakati = MeCab.Tagger("-Owakati -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd")
-
     sp = spm.SentencePieceProcessor()
     sp.Load('./downloads/bert-wiki-ja/wiki-ja.model')
 
@@ -106,7 +99,7 @@ def get_indice(feature, maxlen):
     tokens = []
     tokens.append('[CLS]')
     pre_text = preprocessing_text(feature)#追加
-    tokenized_text = tokenizer_mecab(pre_text, wakati)#追加
+    tokenized_text = tokenizer_mecab(pre_text)#追加
     tokens.extend(tokenized_text)#追加
     #tokens.extend(sp.encode_as_pieces(feature))# sentence piece
     tokens.append('[SEP]')
@@ -136,8 +129,6 @@ def get_indice_pred(feature, maxlen):
     maxlen : int
         最大トークン数
     """
-    wakati = MeCab.Tagger("-Owakati -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd")
-
     sp = spm.SentencePieceProcessor()
     sp.Load('./downloads/bert-wiki-ja/wiki-ja.model')
 
@@ -146,7 +137,7 @@ def get_indice_pred(feature, maxlen):
     tokens = []
     tokens.append('[CLS]')
     pre_text = preprocessing_text(feature)#追加
-    tokenized_text = tokenizer_mecab(pre_text, wakati)#追加
+    tokenized_text = tokenizer_mecab(pre_text)#追加
     tokens.extend(tokenized_text)#追加
     #tokens.extend(sp.encode_as_pieces(feature))
     tokens.append('[SEP]')
