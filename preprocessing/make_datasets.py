@@ -14,23 +14,17 @@ def make_ds():
     csv_path_fine_test = ("./datasets_csv/finetuning/test")
     csv_path_pred_labeling = ("./datasets_csv/pred_labeling")
 
-    # ニュース記事
-    #df_train_news = pd.read_csv(csv_path_pred_labeling + '/news/news_dataset.csv')
 
-    #print(df_train_news)
-
-
-    # ニュースコメント
+    # ニュースコメントパスのリスト
     csv_folder = [csv_path_fine_train , csv_path_fine_test, csv_path_pred_labeling]
 
+    # ニュースコメントのファイル数を取得
     file_count = 0
     for p in csv_folder:
-        #file_count += sum((len(f) for _, _, f in os.walk(p + '/comments'))) - 1
         DIR = p + '/comments'
         file_count += len([name for name in os.listdir(DIR) if name[-4:] == '.csv'])
 
-    #csv_folder = [csv_path_fine_train , csv_path_fine_test]
-
+    # ニュースコメントのデータセットを作成
     for j, p in enumerate(csv_folder[:2]):
         cols = ['text', 'reply', 'good', 'bad']
         df_temp = pd.DataFrame(columns=cols)
@@ -41,19 +35,9 @@ def make_ds():
             file_path = (p + "/comments/" + file_name)
             if not os.path.isfile(file_path):
                 continue
-            #print(str(i+1).zfill(3))#あとで消す
             df_cmt = pd.read_csv(file_path, index_col=0)
-            #df_temp = pd.concat([df_temp, df_cmt], ignore_index=True)
-
             #結合
             df_temp = pd.concat([df_temp, df_cmt], ignore_index=True)
-            ##if j <= 1:
-            #if j == 0 or j == 1:
-            #    df_temp = pd.concat([df_temp, df_cmt], ignore_index=True)
-            #else:
-            #    df_cmt.columns = ["feature", "reply", "good", "bad"]
-            #    df_cmt[["feature", "good", "bad"]].to_csv("./datasets/pred_labeling/features_" + n_file + ".csv", index=False)
-            #    #df_pred_comments = df_temp.copy()
 
         #代入
         if j == 0:
@@ -61,16 +45,10 @@ def make_ds():
         elif j == 1:
             df_fine_test_comments = df_temp.copy()
 
-    print("finetuning train:\n", df_fine_train_comments)
-    print()
-    print("finetuning test:\n", df_fine_test_comments)
-    print()
-    #print("pred labeling:\n", df_pred_comments)
+    #print("finetuning train:\n", df_fine_train_comments)
+    #print("finetuning test:\n", df_fine_test_comments)
 
-    #ラベル
-    # 上にある
-    #csv_folder = [csv_path_fine_train , csv_path_fine_test]
-
+    # 各ニュースコメントに対するラベルを作成
     for j, p in enumerate(csv_folder):
         cols = ['label']
         df_temp = pd.DataFrame(columns=cols)
@@ -81,10 +59,8 @@ def make_ds():
             file_path = (p + "/labels/" + file_name)
             if not os.path.isfile(file_path):
                 continue
-            #print(str(i+1).zfill(3))#あとで消す
             df_labels = pd.read_csv(file_path)#, index_col=0
-            # concat
-            #print(df_labels)
+            #結合
             df_temp = pd.concat([df_temp, df_labels], ignore_index=True)
 
         #代入
@@ -93,28 +69,22 @@ def make_ds():
         elif j == 1:
             df_fine_test_labels = df_temp.copy()
 
-    print("labels train:\n", df_fine_train_labels)
-    print()
-    print("labels test:\n", df_fine_test_labels)
+    #print("labels train:\n", df_fine_train_labels)
+    #print("labels test:\n", df_fine_test_labels)
 
-
-    # 使い業だけで良いのでは？
-    # データセットの作成と保存
+    # データセットの出力
     datasets_folder =  ("./datasets/finetuning")
 
     #ファインチューニング　学習用
     df_fine_train_comments.columns = ["feature", "reply", "good", "bad"]
-    #df_fine_train_comments["feature"].to_csv(datasets_folder + "/train/features.csv", index=False)
     df_train_features = df_fine_train_comments["feature"]
 
     #ファインチューニング　テスト用
     df_fine_test_comments.columns = ["feature", "reply", "good", "bad"]
-    #df_fine_test_comments["feature"].to_csv(datasets_folder + "/test/features.csv", index=False)
     df_test_features = df_fine_test_comments["feature"]
+
     #ラベル付け-ネガポジ学習用
-    #df_fine_train_labels["label"].to_csv(datasets_folder + "/train/labels.csv", index=False)
-    #df_fine_test_labels["label"].to_csv(datasets_folder + "/test/labels.csv", index=False)
     df_train_labels = df_fine_train_labels["label"]
     df_test_labels = df_fine_test_labels["label"]
 
-    return df_train_features, df_test_features, df_train_labels, df_test_labelsdf_fine_train_labels["label"], df_fine_test_labels["label"]
+    return df_train_features, df_test_features, df_train_labels, df_test_labels
