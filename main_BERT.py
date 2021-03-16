@@ -55,11 +55,11 @@ def create_model():
     return model
 
 # データセットの作成
-train_features_df, test_features_df, train_labels_df, test_labels_df = make_datasets.make_ds()
+df_train_features, df_test_features, df_train_labels, df_test_labels = make_datasets.make_ds()
 
 # 最大行の取得
-maxlen_train = preprocessing.get_max(train_features_df)
-maxlen_test = preprocessing.get_max(test_features_df)
+maxlen_train = preprocessing.get_max(df_train_features)
+maxlen_test = preprocessing.get_max(df_test_features)
 print("maxlen_train", maxlen_train)
 print("maxlen_test", maxlen_test)
 
@@ -74,11 +74,11 @@ index2label = {0: 'positive', 1: 'negative'}
 print("label2index", label2index)
 print("index2label", index2label)
 """
-#　クラス数（何種類に分類するか）ネガポジなら２
+# クラス数（何種類に分類するか）ネガポジなら２
 class_count = 2
 
-train_dum = pd.get_dummies(train_labels_df)
-test_dum = pd.get_dummies(test_labels_df)
+train_dum = pd.get_dummies(df_train_labels)
+test_dum = pd.get_dummies(df_test_labels)
 train_labels = np.array(train_dum[['positive', 'negative']])
 test_labels = np.array(test_dum[['positive', 'negative']])
 
@@ -89,7 +89,7 @@ print("test_labels　get_dummies :", test_labels.shape)
 
 train_features = []
 test_features = []
-for feature in train_features_df:
+for feature in df_train_features:
     # ID化
     train_features.append(preprocessing.get_indice(feature, maxlen))
 train_features = np.array(train_features)
@@ -97,7 +97,7 @@ train_features = np.array(train_features)
 # shape(len(train_features), maxlen)のゼロの行列作成
 train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
 
-for feature in test_features_df:
+for feature in df_test_features:
     # ID化
     test_features.append(preprocessing.get_indice(feature, maxlen))
 test_features = np.array(test_features)
@@ -108,9 +108,6 @@ test_segments = np.zeros((len(test_features), maxlen), dtype = np.float32)
 print("train_features :", train_features.shape)
 print("test_features :", test_features.shape)
 
-
-# データセットの作成
-#make_datasets.make_ds()
 
 # パラメータ
 SEQ_LEN = maxlen
