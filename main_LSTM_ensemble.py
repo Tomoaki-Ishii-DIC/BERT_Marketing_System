@@ -12,17 +12,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from keras.optimizers import Adam
 
 from keras.models import Sequential
-from keras.layers import Dense, LSTM, Dropout#, Activation
-#from keras.layers.recurrent import LSTM
-#from keras.layers import LSTM
-#from keras.layers import Dropout
-#from keras.preprocessing import sequence
-#from keras.optimizers import RMSprop
-
-#from keras.utils import np_utils
-#from keras import utils
-
-#import keras.backend as K #?
+from keras.layers import Dense, LSTM, Dropout
 
 from preprocessing import make_table
 from preprocessing import preprocessing
@@ -72,8 +62,6 @@ def create_model_BERT():
     ----------------
 
     """
-    #config_file = os.path.join('./downloads/bert-wiki-ja_config', 'bert_finetuning_config_v1.json')
-    #checkpoint_file = os.path.join('./downloads/bert-wiki-ja', 'model.ckpt-1400000')
     config_file = os.path.join('./downloads/bert-wiki-ja_config', 'bert_lstm_config_v1.json')
     checkpoint_file = os.path.join('./downloads/bert-wiki-ja', 'model.ckpt-1400000')
 
@@ -121,22 +109,13 @@ def create_model_LSTM():
 # デーブルの作成（トレンドデータ、テキスト）
 df_trend = make_table.trend()
 df_news = make_table.text()
-print("ensemble df_trend", df_trend)
-print("ensemble df_text", df_news.columns)
-print("ensemble df_text", df_news)
 
 #　データセットの作成（トレンド＋指標データ、テキスト）
 df_index, df_text = make_table.concat(df_trend, df_news)
 
-print("ensemble df_index", df_index)
-print("ensemble df_text.columns", df_text.columns)
-print("ensemble df_text", df_text)
-
-#新しい関数の出力を利用
-#df_index = df_table_index
-#df_text = df_table_text
-
 ##########　BERT(Train)　##########
+print("")
+print("BERT Model")
 
 # validationデータの比率
 VAL_SPLIT = 0.3
@@ -173,25 +152,15 @@ for t in range(len(df_text)):
 
     ndarray_features[t] = df_resized
 
-print("BERT dataset: ", ndarray_features.shape)
-
 # train_test_split
 train_features = ndarray_features[:train_samples, :]
 test_features = ndarray_features[train_samples:, :]
 
-print("train_features: ", train_features.shape)
-print("test_features: ", test_features.shape)
-
-
 # labelをワンホット表現に変換
-#ndarray_labels = df_text.iloc[:, -1]
 ndarray_labels = df_text.loc[:]['label']
 labels_one_hot = np.identity(2)[ndarray_labels]
 train_labels = labels_one_hot[:train_samples]
 test_labels = labels_one_hot[train_samples:]
-
-print("train_labels: ", train_labels.shape)
-print("test_labels: ", test_labels.shape)
 
 train_segments = np.zeros((len(train_features), maxlen), dtype = np.float32)
 test_segments = np.zeros((len(test_features), maxlen), dtype = np.float32)
@@ -210,7 +179,6 @@ change_config.set_config(SEQ_LEN)
 # モデルの作成
 model_BERT = create_model_BERT()
 model_BERT.summary()
-
 
 # コールバック用（チェックポイント保存先）
 checkpoint_path = './models/finetuning_checkpoint_2'
@@ -232,23 +200,22 @@ model_BERT.save('./models/saved_model_BERT_part2')
 
 ##########　LSTM(Train)　##########
 
+print("")
+print("LSTM Model")
+
 # タイムステップ数
 n_steps = 3
 
 dataset = np.array(df_index)
 
-print("LSTM dataset: ", dataset.shape)
 
 # タイムステップを組み込んだLSTM用データセットの作成
 X, y = make_timestep_dataset(dataset, n_steps)
 
-print("X: ", X.shape)
-print("y: ", y.shape)
 
 # labelをワンホット表現に変換
 y_one_hot = np.identity(2)[y]
 
-print("y_one_hot: ", y_one_hot.shape)
 
 # パラメータ
 BATCHSIZE = 3
@@ -262,11 +229,9 @@ model_LSTM = create_model_LSTM()
 split_rate = 1 - VAL_SPLIT
 split = int(X.shape[0]*split_rate)
 
-print("Split rate: ", split_rate)
-print("Train_split: ", split)
-print("Val_split: ", X.shape[0]-split)
-
 early_stopping = EarlyStopping(monitor='val_loss', mode='auto', patience=0)
 history = model_LSTM.fit(X, y_one_hot, batch_size = BATCHSIZE, epochs = EPOCHS, validation_split=VAL_SPLIT, callbacks=[early_stopping])
+
+model_LSTM.summary()
 
 model_LSTM.save('./models/saved_model_LSTM')
