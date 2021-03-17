@@ -214,9 +214,11 @@ def concat(df_trend, df_news):
 
     df_index_col = df_drop.iloc[:,1:n_index_feature]
     df_label_col = df_drop.loc[:,'label'].astype('int')
-
     df_drop_index = pd.concat([df_index_col,df_label_col], axis=1)
 
     df_drop_text = df_drop.astype('int')#.astype({'label':int})
 
-    return df_drop_index, df_drop_text.iloc[:,n_index_feature:]
+    df_drop_index = df_drop_index.reset_index(drop=True)
+    df_drop_text = df_drop_text.iloc[:,n_index_feature:].reset_index(drop=True)
+
+    return df_drop_index, df_drop_text
