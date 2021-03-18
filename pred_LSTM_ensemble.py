@@ -3,6 +3,7 @@ import numpy as np
 import os
 import json
 import openpyxl
+import pickle
 
 from keras_bert import load_trained_model_from_checkpoint
 from keras_bert import get_custom_objects
@@ -20,6 +21,11 @@ df_news = make_table.text()
 
 #　データセットの作成（トレンド＋指標データ、テキスト）
 df_index, df_text = make_table.concat(df_trend, df_news)
+
+print(df_index.shape)
+print(df_text.shape)
+print(df_index)
+print(df_text)
 
 
 inputs_list = []
@@ -66,8 +72,17 @@ X = pd.concat([df_index[-2:], df_inputs])
 X = X.iloc[:, :-1]
 X_test = np.array(X)
 
+#標準化（学習時のインスタンスを使用する）
+scalerfile = './StandardScaler.pkl'#.sav
+scaler = pickle.load(open(scalerfile, 'rb'))
+#test_scaled_set = scaler.transform(test_set)
+
+#scaler = StandardScaler()
+scaler.fit(X_test)#trainと同じにしたい
+X_test_scaled = scaler.transform(X_test)
+
 # LSTM用の形に直す
-X_test = np.asarray(X_test).astype(np.float32)
+X_test = np.asarray(X_test_scaled).astype(np.float32)
 X_test = X_test[np.newaxis,:,:]
 
 
