@@ -3,6 +3,7 @@ import numpy as np
 import os
 import sys
 import os
+import pickle
 
 from keras_bert import load_trained_model_from_checkpoint
 
@@ -218,6 +219,10 @@ y_dataset = dataset[:, -1]
 scaler = StandardScaler()
 scaler.fit(X_dataset)
 X_dataset_scaled = scaler.transform(X_dataset)
+
+# テストで同じものを使用したいため保存
+scalerfile = './StandardScaler.pkl'#.sav
+pickle.dump(scaler, open(scalerfile, 'wb'))
 
 
 # タイムステップを組み込んだLSTM用データセットの作成
