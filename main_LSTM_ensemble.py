@@ -14,20 +14,24 @@ from keras.optimizers import Adam
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, Dropout
 
+from sklearn.preprocessing import StandardScaler
+
 from preprocessing import make_table
 from preprocessing import preprocessing
 from preprocessing import make_datasets
 from preprocessing import change_config
 
 
-def make_timestep_dataset(dataset, n_steps):
+def make_timestep_dataset(X_dataset, y_dataset, n_steps):
     """
     データセットをLSTMのタイムステップ入力に変形する関数
 
     Parameters
     ----------------
-    dataset : ndarray, df  shape(samples, features)
-        データセット
+    X_dataset : ndarray, df  shape(samples, features)
+        データセット（特徴量）
+    y_dataset : ndarray, df  shape(samples,)
+        ラベル
     n_steps : int
         タイムステップの数
     """
@@ -39,8 +43,8 @@ def make_timestep_dataset(dataset, n_steps):
     i = 0
     while i  < time_steps:
         end_idx = i + n_steps - 1
-        X_seq = dataset[i:end_idx+1, :-1]
-        y_seq = dataset[end_idx, -1]
+        X_seq = X_dataset[i:end_idx+1, :]
+        y_seq = y_dataset[end_idx]
 
         X_list.append(X_seq)
         y_list.append(y_seq)
@@ -51,7 +55,6 @@ def make_timestep_dataset(dataset, n_steps):
     y_ndarray = np.array(y_list).astype(np.int32)
 
     return X_ndarray, y_ndarray
-
 
 
 def create_model_BERT():
@@ -208,10 +211,17 @@ n_steps = 3
 
 dataset = np.array(df_index)
 
+X_dataset = dataset[:, :-1]
+y_dataset = dataset[:, -1]
+
+#標準化
+scaler = StandardScaler()
+scaler.fit(X_dataset)
+X_dataset_scaled = scaler.transform(X_dataset)
+
 
 # タイムステップを組み込んだLSTM用データセットの作成
-X, y = make_timestep_dataset(dataset, n_steps)
-
+X, y = make_timestep_dataset(X_dataset_scaled, y_dataset, n_steps)
 
 # labelをワンホット表現に変換
 y_one_hot = np.identity(2)[y]
