@@ -208,7 +208,7 @@ print("")
 print("LSTM Model")
 
 # タイムステップ数
-n_steps = 3
+TIMESTEPS = 5
 
 dataset = np.array(df_index)
 
@@ -226,7 +226,7 @@ pickle.dump(scaler, open(scalerfile, 'wb'))
 
 
 # タイムステップを組み込んだLSTM用データセットの作成
-X, y = make_timestep_dataset(X_dataset_scaled, y_dataset, n_steps)
+X, y = make_timestep_dataset(X_dataset_scaled, y_dataset, TIMESTEPS)
 
 # labelをワンホット表現に変換
 y_one_hot = np.identity(2)[y]
