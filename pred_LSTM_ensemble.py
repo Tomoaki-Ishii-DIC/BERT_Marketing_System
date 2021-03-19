@@ -115,7 +115,7 @@ model_LSTM = load_model('./models/saved_model_LSTM')
 y_pred_LSTM = model_LSTM.predict(X_test)
 #y_pred = np.round(y_pred_LSTM).astype(int)[0,0]
 
-
+"""
 # アンサンブル
 print("y_pred_BERT", y_pred_BERT)
 print("y_pred_LSTM", y_pred_LSTM)
@@ -127,4 +127,27 @@ y_pred_argmax = y_pred.argmax(axis=1)
 print("Ensemble predict argmax", y_pred_argmax)
 
 nega_posi = ['Positive', 'Negative']
+print("ネガポジ予測:", nega_posi[y_pred_argmax[0]])
+"""
+# 小数点以下の桁数の指定
+#np.set_printoptions(precision=4, suppress=True)
+#print("type(y_pred_BERT[0][0])", type(y_pred_BERT[0][0]))
+
+
+# アンサンブル
+print()
+print("BERT 予測確率:Positive {:f}, Negative {:f}".format(y_pred_BERT[0][0], y_pred_BERT[0][1]))
+print("LSTM 予測確率:Positive {:f}, Negative {:f}".format(y_pred_LSTM[0][0], y_pred_LSTM[0][1]))
+
+# 結果出力
+y_pred = y_pred_BERT*0.5 + y_pred_LSTM*0.5
+
+#print("type(y_pred)", type(y_pred))
+#print("Ensemble predict", y_pred)
+print("Ensemble 確率:Positive {:f}, Negative {:f}".format(y_pred[0][0], y_pred[0][1]))
+y_pred_argmax = y_pred.argmax(axis=1)
+#print("Ensemble predict argmax", y_pred_argmax)
+
+nega_posi = ['Positive', 'Negative']
+print()
 print("ネガポジ予測:", nega_posi[y_pred_argmax[0]])
