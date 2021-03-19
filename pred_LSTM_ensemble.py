@@ -60,7 +60,9 @@ inputs_list.append(0)
 df_index_columns = df_index.columns.values
 df_inputs = pd.DataFrame([inputs_list], columns=df_index_columns)#.T
 
-X = pd.concat([df_index[-2:], df_inputs])
+# trainと合わせる
+TIMESTEPS = 5
+X = pd.concat([df_index[-(TIMESTEPS-1):], df_inputs])
 
 # ラベルの行を消す
 X = X.iloc[:, :-1]
