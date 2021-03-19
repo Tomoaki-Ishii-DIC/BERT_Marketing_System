@@ -22,12 +22,6 @@ df_news = make_table.text()
 #　データセットの作成（トレンド＋指標データ、テキスト）
 df_index, df_text = make_table.concat(df_trend, df_news)
 
-print(df_index.shape)
-print(df_text.shape)
-print(df_index)
-print(df_text)
-
-
 inputs_list = []
 label_list = []
 for df_values in df_index.columns.values:
@@ -114,24 +108,6 @@ model_LSTM = load_model('./models/saved_model_LSTM')
 
 y_pred_LSTM = model_LSTM.predict(X_test)
 #y_pred = np.round(y_pred_LSTM).astype(int)[0,0]
-
-"""
-# アンサンブル
-print("y_pred_BERT", y_pred_BERT)
-print("y_pred_LSTM", y_pred_LSTM)
-
-# 結果出力
-y_pred = y_pred_BERT*0.5 + y_pred_LSTM*0.5
-print("Ensemble predict", y_pred)
-y_pred_argmax = y_pred.argmax(axis=1)
-print("Ensemble predict argmax", y_pred_argmax)
-
-nega_posi = ['Positive', 'Negative']
-print("ネガポジ予測:", nega_posi[y_pred_argmax[0]])
-"""
-# 小数点以下の桁数の指定
-#np.set_printoptions(precision=4, suppress=True)
-#print("type(y_pred_BERT[0][0])", type(y_pred_BERT[0][0]))
 
 
 # アンサンブル
