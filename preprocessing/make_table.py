@@ -116,61 +116,29 @@ def concat(df_trend, df_news):
     ----------------
 
     """
-
-#    date_list = [datetime(2020, 1, 1, hour=0, minute=0, second=0) + timedelta(days=i) for i in range(397)]
-#    df_date = pd.DataFrame(date_list, columns = ["date"])
-#
-#    df_date["date"] = df_date["date"].apply(lambda w: pd.to_datetime(w))
-#
-#    print(df_date)
-
-    print(df_news.columns)
-    print(df_news["date"])
-    print("date2:", df_news.loc[0]["date"].strftime('%Y/%m/%d'))
-
     # 重複している日を取得
     duplicate_date = []
     for s in range(1, len(df_news)):
         if df_news.loc[s]["date"].strftime('%Y/%m/%d') == df_news.loc[s-1]["date"].strftime('%Y/%m/%d'):
             duplicate_date.append(df_news.loc[s]["date"].strftime('%Y/%m/%d'))
 
-    print(".strftime('%Y/%m/%d')", df_news.loc[0]["date"].strftime('%Y/%m/%d'))
-
-    print("duplicate_date", duplicate_date)
-    print("duplicate_date type:", type(duplicate_date[0]))
-    print("duplicate_date type(to_datetime):", type(pd.to_datetime(duplicate_date[0])))
-
-    #if len(duplicate_date) > 0:
-    #    for n_dup in range(len(duplicate_date)):
-    #        for n_date in range(len(df_date)):
-    #            if df_date.loc[n_date]["date"] == duplicate_date[n_dup]:
-    #                df_date.insert(n_date+1, 'D', 0)
+    #開始終了日は変更できるようにした方がいい
 
     #2020/01/01から397日分の連続する日付を作成
     #(ニュースが同じ日に複数ある場合には重複させる)
-    #開始終了日は変更できるようにした方がいい
     if len(duplicate_date) > 0:
         date_list = []
         for i in range(397):
             date_list.append(datetime(2020, 1, 1, hour=0, minute=0, second=0) + timedelta(days=i))
             for n_dup in range(len(duplicate_date)):
-                print("duplicate_date", duplicate_date[n_dup])
-                print("date_list[-1]", pd.to_datetime(date_list[-1]).strftime('%Y/%m/%d'))
                 if duplicate_date[n_dup]==pd.to_datetime(date_list[-1]).strftime('%Y/%m/%d'):
                     date_list.append(duplicate_date[n_dup])
     else:
         date_list = [datetime(2020, 1, 1, hour=0, minute=0, second=0) + timedelta(days=i) for i in range(397)]
 
-    print("date_list[0] type:", type(date_list[0].strftime('%Y/%m/%d')))
-    print("date_list[0] type Timestap:", type(pd.to_datetime(date_list[0])))
-    print("date_list[0] type Timestap:", type(pd.to_datetime(date_list[0].strftime('%Y/%m/%d'))))
-
-
     df_date = pd.DataFrame(date_list, columns = ["date"])
     df_date["date"] = df_date["date"].apply(lambda w: pd.to_datetime(w))
 
-    print(df_date.shape)
-    print(df_date.tail(30))
 
     index_f_path = "./associated_data/dataframe_indicator_index.csv"
     df_index_csv = pd.read_csv(index_f_path)#, index_col=0
@@ -239,20 +207,8 @@ def concat(df_trend, df_news):
     for c in range(1, text_tabel_len):
         df_date[columns_list[c]] = ''
 
-    print("df_date", df_date)
-    print("df_date['label']", df_date.loc[0]['label'])
-    if df_date.loc[0]['label'] == '':
-        print("空白です。")
-    else:
-        print("空白ではありません。")
-    # ''だとfillnaできないので置換する
+    # 空白判定のためにnanで置き換える
     df_date = df_date.replace('', np.nan, regex=True)
-    print("df_date", df_date)
-    if pd.isnull(df_date.loc[0]['label']):
-        print("np.nanです。")
-    else:
-        print("np.nanではありません。")
-
 
     for i in range(len(df_news)):
         d_y = df_news.loc[i]['date'].year
