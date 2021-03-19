@@ -69,10 +69,8 @@ X_test = np.array(X)
 #標準化（学習時のインスタンスを使用する）
 scalerfile = './StandardScaler.pkl'#.sav
 scaler = pickle.load(open(scalerfile, 'rb'))
-#test_scaled_set = scaler.transform(test_set)
 
-#scaler = StandardScaler()
-scaler.fit(X_test)#trainと同じにしたい
+scaler.fit(X_test)
 X_test_scaled = scaler.transform(X_test)
 
 # LSTM用の形に直す
@@ -104,10 +102,8 @@ y_pred_BERT = predicted[0]
 
 #LSTM(Predict)
 model_LSTM = load_model('./models/saved_model_LSTM')
-#model.summary()
 
 y_pred_LSTM = model_LSTM.predict(X_test)
-#y_pred = np.round(y_pred_LSTM).astype(int)[0,0]
 
 
 # アンサンブル
@@ -117,13 +113,9 @@ print("LSTM 予測確率:Positive {:f}, Negative {:f}".format(y_pred_LSTM[0][0],
 
 # 結果出力
 y_pred = y_pred_BERT*0.5 + y_pred_LSTM*0.5
-
-#print("type(y_pred)", type(y_pred))
-#print("Ensemble predict", y_pred)
 print("Ensemble 確率:Positive {:f}, Negative {:f}".format(y_pred[0][0], y_pred[0][1]))
-y_pred_argmax = y_pred.argmax(axis=1)
-#print("Ensemble predict argmax", y_pred_argmax)
 
+y_pred_argmax = y_pred.argmax(axis=1)
 nega_posi = ['Positive', 'Negative']
 print()
 print("ネガポジ予測:", nega_posi[y_pred_argmax[0]])
