@@ -117,6 +117,10 @@ df_news = make_table.text()
 #　データセットの作成（トレンド＋指標データ、テキスト）
 df_index, df_text = make_table.concat(df_trend, df_news)
 
+# pred用に保存
+df_index.to_csv('./datasets/df_index.csv', index=False)
+df_text.to_csv('./datasets/df_text.csv', index=False)
+
 ##########　BERT(Train)　##########
 print("")
 print("BERT Model")
