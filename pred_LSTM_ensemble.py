@@ -16,11 +16,16 @@ from preprocessing import make_table
 
 
 ## デーブルの作成（トレンドデータ、テキスト）
-df_trend = make_table.trend()
-df_news = make_table.text()
+#df_trend = make_table.trend()
+#df_news = make_table.text()
 
 #　データセットの作成（トレンド＋指標データ、テキスト）
-df_index, df_text = make_table.concat(df_trend, df_news)
+#df_index, df_text = make_table.concat(df_trend, df_news)
+
+# 速度向上のため、csvから読み込む
+df_index = pd.read_csv('./datasets/df_index.csv')
+df_text = pd.read_csv('./datasets/df_text.csv')
+
 
 inputs_list = []
 label_list = []
