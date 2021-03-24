@@ -72,9 +72,6 @@ for i in range(file_count):
 
     print("File Name:{}の処理を開始しました。".format(file_name))
 
-    #print("入力確認 df_tests_features", df_tests_features)
-    print("入力確認 df_tests_features.shape", df_tests_features.shape)
-
     # 出力用データフレーム作成
     df_sheet = pd.DataFrame()
 
@@ -169,10 +166,6 @@ for i in range(file_count):
         y_train.append(0)
 
     print("File Name:{}の処理が完了しました。".format(file_name))
-
-    #print("pred_list: ", pred_list)
-    print("pred_list.shape: ", pred_list.shape)
-    #print("good_ratio_list: ", good_ratio_list)
 
 y_train_df = pd.DataFrame(y_train)
 y_train_df.columns = ["label"]
