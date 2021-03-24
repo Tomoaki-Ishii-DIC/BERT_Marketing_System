@@ -60,30 +60,18 @@ df_train_features, df_test_features, df_train_labels, df_test_labels = make_data
 # 最大行の取得
 maxlen_train = preprocessing.get_max(df_train_features)
 maxlen_test = preprocessing.get_max(df_test_features)
-print("maxlen_train", maxlen_train)
-print("maxlen_test", maxlen_test)
 
 maxlen=max(maxlen_train, maxlen_test)
-print("maxlen", maxlen)
 
 ##### ラベル側の処理 #####
 
-"""
-label2index = {'positive': 0, 'negative': 1}
-index2label = {0: 'positive', 1: 'negative'}
-print("label2index", label2index)
-print("index2label", index2label)
-"""
-# クラス数（何種類に分類するか）ネガポジなら２
+# クラス数（何種類に分類するか）ネガポジなら２ {0: 'positive', 1: 'negative'}
 class_count = 2
 
 train_dum = pd.get_dummies(df_train_labels)
 test_dum = pd.get_dummies(df_test_labels)
 train_labels = np.array(train_dum[['positive', 'negative']])
 test_labels = np.array(test_dum[['positive', 'negative']])
-
-print("train_labels　get_dummies :", train_labels.shape)
-print("test_labels　get_dummies :", test_labels.shape)
 
 ##### 特徴量側の処理 #####
 
@@ -105,10 +93,6 @@ test_features = np.array(test_features)
 # shape(len(test_features), maxlen)のゼロの行列作成
 test_segments = np.zeros((len(test_features), maxlen), dtype = np.float32)
 
-print("train_features :", train_features.shape)
-print("test_features :", test_features.shape)
-
-
 # パラメータ
 SEQ_LEN = maxlen
 BATCH_SIZE = 16
@@ -125,15 +109,13 @@ change_config.set_config(SEQ_LEN)
 model = create_model()
 model.summary()
 
-
 # コールバック用　チェックポイント保存用
 checkpoint_path = './models/finetuning_checkpoint'
 
 # 学習
 history = model.fit([train_features, train_segments],
           train_labels,
-          epochs = EPOCH,#1,#3,
-          #epochs = EPOCH,
+          epochs = EPOCH,
           batch_size = BATCH_SIZE,
           validation_data=([test_features, test_segments], test_labels),
           shuffle=False,
