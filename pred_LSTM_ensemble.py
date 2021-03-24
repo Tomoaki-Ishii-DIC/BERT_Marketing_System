@@ -153,10 +153,11 @@ while True:
         print(temp_message)
         pred_message += temp_message + "\n"
 
+
         nega_posi = ['Positive', 'Negative']
         y_pred_argmax = y_pred.argmax(axis=1)
-        print()
         temp_message = "ネガポジ予測: {}".format(nega_posi[y_pred_argmax[0]])
+        print()
         print(temp_message)
         pred_message += "\n" + temp_message + "\n"
 
