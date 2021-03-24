@@ -28,4 +28,3 @@ def set_config(max_len):
 
     with open(json_path) as f:
         data = json.load(f)
-    print(json.dumps(data, indent=2))
