@@ -111,6 +111,12 @@ model.summary()
 
 # コールバック用　チェックポイント保存用
 checkpoint_path = './models/finetuning_checkpoint'
+
+check_point = ModelCheckpoint(monitor='val_acc',
+                                mode='max',
+                                filepath=checkpoint_path,
+                                save_best_only=True)
+                                
 early_stopping = EarlyStopping(monitor = "val_loss",
                                 min_delta=0.001,
                                 patience=5,
