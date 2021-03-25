@@ -9,7 +9,7 @@ from keras_bert import load_trained_model_from_checkpoint
 
 import keras
 from keras.models import Model
-from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau#TensorBoard
 from keras.optimizers import Adam
 
 from keras.models import Sequential
@@ -188,20 +188,30 @@ change_config.set_config(SEQ_LEN)
 model_BERT = create_model_BERT()
 model_BERT.summary()
 
-# コールバック用（チェックポイント保存先）
+# コールバック用
+# チェックポイント保存先
 checkpoint_path = './models/finetuning_checkpoint_2'
+check_point = ModelCheckpoint(monitor='val_acc',
+                                mode='max',
+                                filepath=checkpoint_path,
+                                save_best_only=True)
+
+early_stopping = EarlyStopping(monitor = "val_loss",
+                                min_delta=0.001,
+                                patience=5,
+                                verbose=1,
+                                mode="min",
+                                restore_best_weights=False)
 
 # 学習
 history = model_BERT.fit([train_features, train_segments],
-          train_labels,
-          epochs = EPOCH,
-          batch_size = BATCH_SIZE,
-          validation_data=([test_features, test_segments], test_labels),
-          shuffle=False,
-          verbose = 1,
-          callbacks = [
-              ModelCheckpoint(monitor='val_acc', mode='max', filepath=checkpoint_path, save_best_only=True)
-          ])
+                          train_labels,
+                          epochs = EPOCH,
+                          batch_size = BATCH_SIZE,
+                          validation_data=([test_features, test_segments], test_labels),
+                          shuffle=False,
+                          verbose = 1,
+                          callbacks = [check_point, early_stopping])
 
 # モデルの保存
 model_BERT.save('./models/saved_model_BERT_part2')
@@ -235,7 +245,6 @@ X, y = make_timestep_dataset(X_dataset_scaled, y_dataset, TIMESTEPS)
 # labelをワンホット表現に変換
 y_one_hot = np.identity(2)[y]
 
-
 # パラメータ
 BATCHSIZE = 3
 EPOCHS = 50
@@ -245,11 +254,32 @@ EPOCHS = 50
 # モデルの作成
 model_LSTM = create_model_LSTM()
 
-split_rate = 1 - VAL_SPLIT
-split = int(X.shape[0]*split_rate)
+#コールバック用
+early_stopping = EarlyStopping(monitor = "val_loss",
+                                min_delta=0.001,
+                                patience=7,
+                                verbose=1,
+                                mode="min",
+                                restore_best_weights=False)
 
-early_stopping = EarlyStopping(monitor='val_loss', mode='auto', patience=0)
-history = model_LSTM.fit(X, y_one_hot, batch_size = BATCHSIZE, epochs = EPOCHS, validation_split=VAL_SPLIT, callbacks=[early_stopping])
+reduce_lr = ReduceLROnPlateau(monitor="val_loss",
+                                factor=0.1,
+                                patience=2,
+                                verbose=1,
+                                mode="min",
+                                min_delta=0.0001)
+
+#3/25テスト
+print("X", X)
+print("y_one_hot", y_one_hot)
+
+
+history = model_LSTM.fit(X,
+                        y_one_hot,
+                        batch_size = BATCHSIZE,
+                        epochs = EPOCHS,
+                        validation_split=VAL_SPLIT,
+                        callbacks=[early_stopping, reduce_lr])
 
 model_LSTM.summary()
 
