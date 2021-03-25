@@ -111,18 +111,21 @@ model.summary()
 
 # コールバック用　チェックポイント保存用
 checkpoint_path = './models/finetuning_checkpoint'
-
+early_stopping = EarlyStopping(monitor = "val_loss",
+                                min_delta=0.001,
+                                patience=5,
+                                verbose=1,
+                                mode="min",
+                                restore_best_weights=False)
 # 学習
 history = model.fit([train_features, train_segments],
-          train_labels,
-          epochs = EPOCH,
-          batch_size = BATCH_SIZE,
-          validation_data=([test_features, test_segments], test_labels),
-          shuffle=False,
-          verbose = 1,
-          callbacks = [
-              ModelCheckpoint(monitor='val_acc', mode='max', filepath=checkpoint_path, save_best_only=True)
-          ])
+                      train_labels,
+                      epochs = EPOCH,
+                      batch_size = BATCH_SIZE,
+                      validation_data=([test_features, test_segments], test_labels),
+                      shuffle=False,
+                      verbose = 1,
+                      callbacks = [check_point, early_stopping])
 
 # モデルの保存
 model.save('./models/saved_model_BERT')
