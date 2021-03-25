@@ -190,7 +190,7 @@ model_BERT.summary()
 
 # コールバック用
 # チェックポイント保存先
-checkpoint_path = './models/finetuning_checkpoint_2'
+checkpoint_path = './models/bert_checkpoint'
 check_point = ModelCheckpoint(monitor='val_acc',
                                 mode='max',
                                 filepath=checkpoint_path,
@@ -268,11 +268,6 @@ reduce_lr = ReduceLROnPlateau(monitor="val_loss",
                                 verbose=1,
                                 mode="min",
                                 min_delta=0.0001)
-
-#3/25テスト
-print("X", X)
-print("y_one_hot", y_one_hot)
-
 
 history = model_LSTM.fit(X,
                         y_one_hot,
