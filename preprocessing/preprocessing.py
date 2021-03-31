@@ -1,5 +1,7 @@
 import MeCab
 import re
+import os
+import subprocess
 import string
 import sentencepiece as spm
 import numpy as np
@@ -45,7 +47,11 @@ def tokenizer_mecab(text):
     wakati : Mecab Instance
         Mecabの分かち書きインスタンス
     """
-    wakati = MeCab.Tagger("-Owakati -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd")
+    cmd = 'echo `mecab-config --dicdir`'
+    neologd_lib = (subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                           shell=True).communicate()[0]).decode('utf-8').replace( '\n' , '' )
+    wakati = MeCab.Tagger('-Owakati -d' + ' ' + neologd_lib + '/mecab-ipadic-neologd')
+
     words = wakati.parse(text).split()
 
     return words
