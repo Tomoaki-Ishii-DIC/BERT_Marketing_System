@@ -167,6 +167,10 @@ for i in range(file_count):
 
     print("File Name:{}の処理が完了しました。".format(file_name))
 
+
+# フォルダ作成
+os.makedirs("./datasets", exist_ok=True)
+
 y_train_df = pd.DataFrame(y_train)
 y_train_df.columns = ["label"]
 y_train_df.to_csv("./datasets/y_train.csv")
