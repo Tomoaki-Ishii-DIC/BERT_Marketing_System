@@ -42,8 +42,12 @@ for p in csv_folder:
     file_count += len([name for name in os.listdir(dir) if name[-4:] == '.csv'])
 
 
+# フォルダ作成
+excel_folder = "./attention_excel"
+os.makedirs(excel_folder, exist_ok=True)
+
 # excelファイルの準備
-excel_file = './attention_excel/self_attention.xlsx'
+excel_file = excel_folder + "/self_attention.xlsx"
 writer = pd.ExcelWriter(excel_file, engine='xlsxwriter')
 wb = openpyxl.Workbook()
 sheet = wb.active
@@ -179,4 +183,4 @@ print("y_train: ", y_train)
 X_train_df = pd.read_csv("./datasets_csv/pred_labeling/news/news_dataset.csv")
 X_train_df.to_csv("./datasets/X_train.csv", index=False)
 
-print("処理が完了しました。作成されたX_train,y_trainおよびattentionを確認してください。")
+print("処理が完了しました。作成されたX_train,y_trainおよびself-attentionを確認してください。")
