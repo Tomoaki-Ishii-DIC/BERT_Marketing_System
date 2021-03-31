@@ -21,7 +21,7 @@ def text():
     ----------------
 
     """
-    csv_path_news = ("./datasets/x_train.csv")
+    csv_path_news = ("./datasets/X_train.csv")
 
     # ニュース記事
     if not os.path.isfile(csv_path_news):
