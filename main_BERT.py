@@ -100,7 +100,7 @@ BERT_DIM = 768
 LR = 1e-4
 
 # 学習回数
-EPOCH = 1#20
+EPOCH = 20
 
 # 設定の変更
 change_config.set_config(SEQ_LEN)
@@ -116,7 +116,7 @@ check_point = ModelCheckpoint(monitor='val_acc',
                                 mode='max',
                                 filepath=checkpoint_path,
                                 save_best_only=True)
-                                
+
 early_stopping = EarlyStopping(monitor = "val_loss",
                                 min_delta=0.001,
                                 patience=5,
