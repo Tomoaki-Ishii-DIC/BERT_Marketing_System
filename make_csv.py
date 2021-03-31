@@ -190,23 +190,31 @@ def make_news(input_path, output_path, output_file_name):
 
 
 # 読み込むテキストファイルとcsvの出力先を指定（train、test、pred_labeling）
-input_path_cmt = [("./datasets_text/finetuning/train/comments"),
-                ("./datasets_text/finetuning/test/comments"),
-                ("./datasets_text/pred_labeling/comments")]
-output_path_cmt = [("./datasets_csv/finetuning/train/comments"),
-                ("./datasets_csv/finetuning/test/comments"),
-                ("./datasets_csv/pred_labeling/comments")]
+input_path_cmt = ["./datasets_text/finetuning/train/comments",
+                "./datasets_text/finetuning/test/comments",
+                "./datasets_text/pred_labeling/comments"]
+output_path_cmt = ["./datasets_csv/finetuning/train/comments",
+                "./datasets_csv/finetuning/test/comments",
+                "./datasets_csv/pred_labeling/comments"]
+
+# フォルダ作成
+for f in range(len(output_path_cmt)):
+    os.makedirs(output_path_cmt[f], exist_ok=True)
 
 # コメントのデータセット作成
 make_cmt(input_path_cmt, output_path_cmt)
 
 # 読み込むテキストファイルとcsvの出力先を指定（train、test、pred_labeling）
-input_path_news = [("./datasets_text/finetuning/train/news"),
-                ("./datasets_text/finetuning/test/news"),
-                ("./datasets_text/pred_labeling/news")]
-output_path_news = [("./datasets_csv/finetuning/train/news"),
-                ("./datasets_csv/finetuning/test/news"),
-                ("./datasets_csv/pred_labeling/news")]
+input_path_news = ["./datasets_text/finetuning/train/news",
+                "./datasets_text/finetuning/test/news",
+                "./datasets_text/pred_labeling/news"]
+output_path_news = ["./datasets_csv/finetuning/train/news",
+                "./datasets_csv/finetuning/test/news",
+                "./datasets_csv/pred_labeling/news"]
+
+# フォルダ作成
+for f in range(len(output_path_news)):
+    os.makedirs(output_path_news[f], exist_ok=True)
 
 # 出力ファイル名を指定（train、test、pred_labeling）
 output_file_name = ["news_dataset_train.csv",
@@ -215,5 +223,9 @@ output_file_name = ["news_dataset_train.csv",
 
 # ニュース記事のデータセット作成
 make_news(input_path_news, output_path_news, output_file_name)
+
+# フォルダ作成
+os.makedirs("./datasets_csv/finetuning/train/labels", exist_ok=True)
+os.makedirs("./datasets_csv/finetuning/test/labels", exist_ok=True)
 
 print("csvファイルの作成が完了しました。ファインチューニング用のラベルを作成してください。")
