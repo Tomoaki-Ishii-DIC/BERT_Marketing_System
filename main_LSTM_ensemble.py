@@ -179,7 +179,7 @@ SEQ_LEN = maxlen
 BATCH_SIZE = 5
 BERT_DIM = 768
 LR = 1e-4
-EPOCH = 3#20
+EPOCH = 20
 
 # 設定の変更
 change_config.set_config(SEQ_LEN)
