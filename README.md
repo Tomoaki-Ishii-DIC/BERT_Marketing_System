@@ -1,154 +1,38 @@
 # BERT Marketing System
 
-This is the Marketing Machine Learning Model that used BERT.
+これは自然言語処理モデルのBERTを用いたディープラーニング・マーケティングモデルです。  
+自社の未発表のプレスリリースと関連データを入力するとプレスリリースに対する読者の反応を推測します。
 
 # Quick Start
 
-1. テキスト集め（サンプルあり）
+学習済みのモデルが用意してありますので、試しに動かしたいという方はこちらを実行してください。
 
-    Yahoo!ニュースの記事とコメントをコピーしてテキストファイルに貼り付けて保存(任意のフォルダへ)。
+一例として新型コロナ関連の音楽ニュースとそれに関連する数値データを学習させてあります。  
+指定の数値データとコロナ禍における音楽ビジネス施策に関するプレスリリーステキストを入力すると、その施策に対する世間の反応を推測して出力します。
 
-    以下の形式で保存すること（番号は001から始まる通し番号にする）。  
+1. ターミナルから python pred_LSTM_ensemble.py を実行
 
-    ```bash
-    news_text_001.txt  
-    news_text_002.txt  
-    news_text_003.txt  
-    comment_text_001.txt  
-    comment_text_002.txt  
-    comment_text_003.txt  
-    ```
+    数秒待つと入力フォームが表示されるのでそれまで待機する  
+    ![caption](./InputFormImage.jpg)
 
-2. ファイルをフォルダに振り分ける
+2. 入力フォームに当日の各種データを入力する
 
-    ./datasets_text フォルダ内に以下の様に振り分ける（ファイル名は変更しない）。  
+    以下の値をインターネット等で確認して入力する。  
+    （使用感を確かめたいだけであれば適当な数値で構いません。  
+     また、あくまでQuickStart用に選んだ数値ですので、  
+     実際には項目を自由に選んで学習させることが可能です。）
 
-    - finetuning
-      - BERTのファインチューニング用
-    - pred_labelingfinetuning
-      - LSTMの学習用（ラベリングはBERTが行う）
+3. 入力フォームに予測したいプレスリリースの文章を入力
 
-    ```bash
-    ./datasets_text  
-      └─ finetuning   
-        └─ test  
-          └─ comments  
-            └─ comment_text_xxx.txt  
-            └─ comment_text_xxx.txt  
-          └─ news  
-            └─ news_text_xxx.txt  
-            └─ news_text_xxx.txt  
-        └─ train  
-          └─ comments  
-            └─ comment_text_xxx.txt  
-            └─ comment_text_xxx.txt  
-          └─ news  
-            └─ news_text_xxx.txt  
-            └─ news_text_xxx.txt  
-      └─ pred_labeling  
-        └─ comments  
-          └─ comment_text_xxx.txt  
-          └─ comment_text_xxx.txt  
-        └─ news  
-          └─ news_text_xxx.txt  
-          └─ news_text_xxx.txt  
-    ```
+    プレスリリースがない場合はネットニュースの記事などを貼り付ける
 
-3. プログラムで表に変換（csv出力）
+4. 実行ボタンを押す
 
-    以下のファイルを実行する。
+    数秒後に予測結果がポップアップで出力されるので結果を確認する（PositiveまたはNegative）。  
+    確認したら終了ボタンをクリック。
 
-    - make_news_csv.py
-    - make_comments_csv.py
-
-    ./datasets_csv フォルダにファイルが作成されたことを確認する。
-
-4. ファインチューニング用のラベルを作成する
-
-    ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。  
-    ファイル名は以下の形式に従う。
-
-    ```bash
-    comment_labels_001.csv  
-    comment_labels_002.csv  
-    comment_labels_003.csv  
-
-    ```
-
-    ファイルの中は以下の形式で記載する。
-
-    |  label  |
-    | ---- |
-    |  positive  |
-    |  negative  |
-    |  positive  |
-    |  negative  |
-    |  positive  |
-    |  negative  |
-
-5. 日本語学習済みモデルをダウンロードする
-
-    以下の学習済みモデルを利用しているため、下記URLにアクセスしGoogleドライブへのリンクから「bert-wiki-ja」フォルダをダウンロードして ./downloads フォルダへ入れる。
-
-    https://yoheikikuta.github.io/bert-japanese/
-
-
-6. 設定ファイルを変更
-
-    ./downloads/bert-wiki-ja_config 内の’bert_finetuning_config_v1.json’を開く。  
-
-    最大単語数を必要に応じて変更する。  
-
-    ```bash
-    "max_position_embeddings": 300,  
-    "max_seq_length": 300,  
-    ```
-
-    最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」及び「Sprint26_卒業課題_Keras_BERT_local.ipynb」内の変数 ’max_token_num’ として出力される。  
-    実行中に変更の必要性が出た場合、その都度変更する。
-
-
-6. BERTのNotebookを実行
-
-    用途に応じて以下のいづれかのファイルを使用。
-
-    - Sprint26_卒業課題_Keras_BERT_AWS.ipynb
-    - Sprint26_卒業課題_Keras_BERT_local.ipynb  
-
-    全ての処理が完了した後、 ./datasets フォルダ内に y_train.csv が作成されていることを確認する。
-
-8. Self-Attention（キーワード）の確認
-
-    ./attention_excel フォルダに各ニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
-
-    ```bash
-    attention_001.xlsx  
-    attention_002.xlsx  
-    attention_003.xlsx  
-    ```
-
-    Self-Attention層の重みの数値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
-
-9. 関連する時系列データの取得
-
-    インターネットから関連データを取得する。
-
-    - Googleトレンドデータの取得  
-    Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
-
-    - その他の指標のデータ  
-    任意のデータを取得して ./associated_data/multiTimeline に保管する。  
-    (「Sprint26_卒業課題_Keras_RNN.ipynb」に読み込みやテーブル化するコードを追加してください。)
-
-
-10. RNNのNotebookを実行する
-
-    以下のファイルを実行する。
-
-    - Sprint26_卒業課題_Keras_RNN.ipynb
-
-    ファイル内のネガポジ判定結果を確認する。
-
+    続けて推測したい場合は入力し直して実行ボタンをクリック。
+    終了する場合は終了ボタンをクリックする。
 
 作業完了
 
@@ -156,9 +40,22 @@ This is the Marketing Machine Learning Model that used BERT.
 
 このプログラムは自社のプレスリリースとそれに関連する時系列指標データを入力するとプレスリリースに対する一般消費者の反応の予測を出力するプログラムです。
 
-一般消費者の反応の予測はPositiveまたはNegativeで返されます。
+例えば以下のような課題解決に活用できます
+- 自社の新しい施策に対しての反応が気になる
+- プレスリリースの文章表現中にネガティブな印象を与える要素がないか確認したい
+- マーケティングにインターネット上の情報を活用したい
 
-ネガポジ判定は各種AutoMLでも可能ですが、このモデルの強みはテキストだけでなく関連する数値データを組み合わせて推測することができる点です。
+消費者の反応が予測できればテキスト表現の修正や、場合によってはその施策内容の変更、実施可否の判断を行うことができます。
+
+このモデルでは一般消費者の反応の予測はPositiveまたはNegativeで返されます。
+
+ネガポジ判定は各種AutoMLでも可能ですが、このモデルの強みはテキストだけでなく関連する数値データと組み合わせて推測することができる点です。
+
+消費者が受ける印象はそのテキストの内容だけで決まるわけではありません。  
+消費者はその時々の社会情勢を背景知識として持っており、そのフィルターを通してそのテキストから何らかの印象を受け取ります。  
+同じテキストを読んでも背景が異なれば全く別の反応をしかねません。  
+そこで、テキスト情報だけでなく、そのテキストと関連する社会情勢を反映したデータも判定に用いることにしました。
+
 
 このモデルは２段階のモデルになっています。
 
@@ -166,19 +63,19 @@ This is the Marketing Machine Learning Model that used BERT.
 
 ```bash
 - First stage
-	- BERT（Keras）
+	- BERT（Keras_BERT）
 		- 事前学習済みモデルをファインチューニング
 		- 推測を利用した各ニュースに対してのラベル付け（ネガポジ）
 		- Self-Attention抽出によるキーワード把握
 
 - Second stage
-	- LSTM（Keras）
-		- ニューステキストと各数値指標（トレンドや業界関連データ）の同時入力による時系列学習と予測
+	- LSTM & BERT Ensemble（Keras & Keras_BERT）
+		- ニューステキストと各数値指標（トレンドや業界関連データ）による時系列学習と予測
 ```
 
 ![caption](./ModelImage.jpg)
 
-利用するためにはまず取得したデータをこのモデルに学習させる必要があります。
+利用するためにはまず学習用のデータを集める必要があります。
 
 このモデルは２段階のモデルになっており、それぞれの段階において以下の学習データが必要です。
 
@@ -191,6 +88,17 @@ This is the Marketing Machine Learning Model that used BERT.
 	- キーワード（Second stageの出力）のトレンドデータ
 	- 事業に関連する指標の時系列データ（いくつか）
 ```
+
+データ収集については、インターネットでニュース記事とそれに対するコメントをテキストファイルで取得します。（下記マニュアル 1. 参照）  
+著作権法上、データ分析を目的とする複製は認められています。  
+しかし、自動取得を規約で許可していないサイトもありますので、収集方法としては対象のニュースページを開いて、内容をコピー＆ペーストすることになると思います。
+
+このモデルを利用するにあたって、以下の問題点を考慮する必要があります。
+- 判定したいプレスリリースごとに学習し直さないといけない  
+  データ収集で数日、学習・推測で数時間かかるため、効果に対してコストがかかりすぎる
+- 標本に偏りがある  
+  ニュースにコメントを書く人はネガティブな印象を抱いている傾向が強く、本来知りたい一般消費者の標本として相応しいとは言えない
+
 
 # User's Manual
 
@@ -278,10 +186,7 @@ This is the Marketing Machine Learning Model that used BERT.
 
 3. プログラムで表に変換（csv出力）
 
-    以下のファイルを実行する。
-
-    - make_news_csv.py
-    - make_comments_csv.py
+    python make_csv.py を実行する。  
 
     ./datasets_csv フォルダにファイルが作成されたことを確認する。
 
@@ -314,42 +219,22 @@ This is the Marketing Machine Learning Model that used BERT.
 
     https://yoheikikuta.github.io/bert-japanese/
 
+6. python main_BERT.py を実行
 
-6. 設定ファイルを変更
+    BERTの学習に時間がかかるため、AWS EC2 などのGPU環境で実行することが望ましい。
 
-    ./downloads/bert-wiki-ja_config 内の’bert_finetuning_config_v1.json’を開く。  
+7. python pred_BERT.py を実行
 
-    最大単語数を必要に応じて変更する。  
-
-    ```bash
-    "max_position_embeddings": 300,  
-    "max_seq_length": 300,  
-    ```
-
-    最大単語数は「Sprint26_卒業課題_Keras_BERT_AWS.ipynb」及び「Sprint26_卒業課題_Keras_BERT_local.ipynb」内の変数 ’max_token_num’ として出力される。  
-    実行中に変更の必要性が出た場合、その都度変更する。
-
-
-6. BERTのNotebookを実行
-
-    用途に応じて以下のいづれかのファイルを使用。
-
-    - Sprint26_卒業課題_Keras_BERT_AWS.ipynb
-    - Sprint26_卒業課題_Keras_BERT_local.ipynb  
-
-    全ての処理が完了した後、 ./datasets フォルダ内に y_train.csv が作成されていることを確認する。
+        BERTの学習に時間がかかるため、AWS EC2 などのGPU環境で実行することが望ましい。  
+        以下のファイルが作成されたか確認する。
+        - ./datasetsフォルダ内のX_trainおよびy_train
+        - ./attention_excel/self_attention.xlsx
 
 8. Self-Attention（キーワード）の確認
 
-    ./attention_excel フォルダに各ニュース記事に対応した'.xlxs'ファイルが作成されるので、開いて中身を確認する。  
-
-    ```bash
-    attention_001.xlsx  
-    attention_002.xlsx  
-    attention_003.xlsx  
-    ```
-
-    Self-Attention層の重みの数値が高くなっている単語がネガポジ判定に寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
+    ./attention_excel/self_attention.xlsxを開き、 各ニュース記事に対応したシートを確認。  
+    Self-Attention層の重みの数値が高いセルが赤く着色される。  
+    重みの数値が高くなっている単語がネガポジ判定により寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
 
 9. 関連する時系列データの取得
 
@@ -359,17 +244,31 @@ This is the Marketing Machine Learning Model that used BERT.
     Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
 
     - その他の指標のデータ  
-    任意のデータを取得して ./associated_data/multiTimeline に保管する。  
-    (「Sprint26_卒業課題_Keras_RNN.ipynb」に読み込みやテーブル化するコードを追加してください。)
+    任意のデータを取得して ./associated_data/Industry_indicator_data に保管する。
 
+10. 上記 9. の手順で取得したIndustry_indicator_dataを以下の形式に変形する  
+    （ファイル作成方法のサンプルがEdit_Tabledata.ipynbにあります）
 
-10. RNNのNotebookを実行する
+    フォルダ　：./associated_data  
+    ファイル名：dataframe_indicator_index.csv  
+    形　　　式：ファイルの中は以下の形式で記載する。
 
-    以下のファイルを実行する。
+      |  date  |  feature_name  |  feature_name  |
+      | ---- | ---- | ---- |
+      |  YYYY-MM-DD  |  int or float  |  int or float  |
+      |  YYYY-MM-DD  |  int or float  |  int or float  |
+      |  YYYY-MM-DD  |  int or float  |  int or float  |
+      |  YYYY-MM-DD  |  int or float  |  int or float  |
+      |  YYYY-MM-DD  |  int or float  |  int or float  |
+      |  YYYY-MM-DD  |  int or float  |  int or float  |
 
-    - Sprint26_卒業課題_Keras_RNN.ipynb
+      ※ feature_nameは任意の特徴量名
 
-    ファイル内のネガポジ判定結果を確認する。
+11. python main_LSTM_ensemble.py を実行する
+
+12. python pred_LSTM_ensemble.py を実行する
+
+    ネガポジ判定結果を確認する。
 
 
 作業完了
