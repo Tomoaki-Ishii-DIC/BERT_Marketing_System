@@ -68,11 +68,19 @@ maxlen=max(maxlen_train, maxlen_test)
 # クラス数（何種類に分類するか）ネガポジなら２ {0: 'positive', 1: 'negative'}
 class_count = 2
 
-train_dum = pd.get_dummies(df_train_labels)
-test_dum = pd.get_dummies(df_test_labels)
-train_labels = np.array(train_dum[['positive', 'negative']])
-test_labels = np.array(test_dum[['positive', 'negative']])
+#train_dum = pd.get_dummies(df_train_labels)
+#test_dum = pd.get_dummies(df_test_labels)
+#train_labels = np.array(train_dum[['positive', 'negative']])
+#test_labels = np.array(test_dum[['positive', 'negative']])
 
+# labelをワンホット表現に変換
+df_train_num = df_train_labels.replace('positive', 0).replace('negative', 1)
+ndarray_labels = df_train_num.astype(int)
+train_labels = np.identity(2)[ndarray_labels].astype(int)
+
+df_test_num = df_test_labels.replace('positive', 0).replace('negative', 1)
+ndarray_labels = df_test_num.astype(int)
+test_labels = np.identity(2)[ndarray_labels].astype(int)
 ##### 特徴量側の処理 #####
 
 train_features = []
