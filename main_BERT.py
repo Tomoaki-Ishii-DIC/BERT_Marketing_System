@@ -75,12 +75,12 @@ class_count = 2
 
 # labelをワンホット表現に変換
 df_train_num = df_train_labels.replace('positive', 0).replace('negative', 1)
-ndarray_labels = df_train_num.astype(int)
-train_labels = np.identity(2)[ndarray_labels].astype(int)
+train_ndarray_labels = df_train_num.astype(int)
+train_labels = np.identity(2)[train_ndarray_labels].astype(int)
 
 df_test_num = df_test_labels.replace('positive', 0).replace('negative', 1)
-ndarray_labels = df_test_num.astype(int)
-test_labels = np.identity(2)[ndarray_labels].astype(int)
+test_ndarray_labels = df_test_num.astype(int)
+test_labels = np.identity(2)[test_ndarray_labels].astype(int)
 ##### 特徴量側の処理 #####
 
 train_features = []
