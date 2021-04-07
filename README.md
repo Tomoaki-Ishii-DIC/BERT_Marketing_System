@@ -21,23 +21,33 @@
 
     （git-hubの容量制限の問題によりBERTモデルをgitにあげることができなかったため、上記手順によりダウンロードをお願いします。）
 
-2. ターミナルから python quick_start.py を実行
+2. 必要なライブラリのインストール
+
+    以下のコマンドを実行
+    pip install -r requirements.txt
+
+    mecabの日本語辞書をインストールする
+    git clone https://github.com/neologd/mecab-ipadic-neologd.git
+    cd mecab-ipadic-neologd
+    sudo bin/install-mecab-ipadic-neologd-n -a
+
+3. ターミナルから python quick_start.py を実行
 
     数秒待つと入力フォームが表示されるのでそれまで待機する  
     ![caption](./InputFormImage.jpg)
 
-3. 入力フォームに当日の各種データを入力する
+4. 入力フォームに当日の各種データを入力する
 
     以下の値をインターネット等で確認して入力する。  
     （使用感を確かめたいだけであれば適当な数値で構いません。  
      また、あくまでQuickStart用に選んだ数値ですので、  
      実際には項目を自由に選んで学習させることが可能です。）
 
-4. 入力フォームに予測したいプレスリリースの文章を入力
+5. 入力フォームに予測したいプレスリリースの文章を入力
 
     プレスリリースがない場合はネットニュースの記事などを貼り付ける
 
-5. 実行ボタンを押す
+6. 実行ボタンを押す
 
     数秒後に予測結果がポップアップで出力されるので結果を確認する（PositiveまたはNegative）。  
     確認したら終了ボタンをクリック。
