@@ -203,6 +203,12 @@ early_stopping = EarlyStopping(monitor = "val_loss",
                                 mode="min",
                                 restore_best_weights=False)
 
+reduce_lr = ReduceLROnPlateau(monitor="val_loss",
+                                factor=0.1,
+                                patience=2,
+                                verbose=1,
+                                mode="min",
+                                min_delta=0.0001)
 # 学習
 history = model_BERT.fit([train_features, train_segments],
                           train_labels,
@@ -211,7 +217,7 @@ history = model_BERT.fit([train_features, train_segments],
                           validation_data=([test_features, test_segments], test_labels),
                           shuffle=False,
                           verbose = 1,
-                          callbacks = [check_point, early_stopping])
+                          callbacks = [check_point, early_stopping, reduce_lr])
 
 # モデルの保存
 model_BERT.save('./models/saved_model_BERT_part2')
