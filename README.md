@@ -23,7 +23,7 @@
 
 2. 必要なライブラリのインストール
 
-    以下のコマンドを実行
+    以下のコマンドを実行  
     pip install -r requirements.txt
 
     mecabの辞書をインストールする  
