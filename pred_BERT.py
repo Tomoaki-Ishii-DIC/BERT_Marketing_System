@@ -121,14 +121,14 @@ for i in range(file_count):
 
         # Attentionの抜き出し
         # predictでAttentionも出すようにしてあり、predicted[1]はAttention shape(1, maxlen ,BERT_DIM)
-        # 平均してしまうと値が小さくなりすぎるため最大値を取得
+        # 最大値を取得
         weights = [w.max() for w in predicted[1][0]]
 
         # トークン(単語)とトークンに対応するAttention（最大値）からなるデータフレーム作成 shape(2, maxlen)
         df = pd.DataFrame([tokens, weights], index=['token', 'weight'])
 
         # Attentionの平均
-        max_weight = np.asarray(weights).max()
+        #max_weight = np.asarray(weights).max()
 
         # タイプがNoneだとエラーが出るので０に置き換え
         df.loc['weight'] = df.loc['weight'].apply(lambda w: 0 if type(w) == type(None) else w)
