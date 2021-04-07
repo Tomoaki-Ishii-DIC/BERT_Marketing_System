@@ -21,7 +21,7 @@ from keras import Input, Model
 from keras.models import Model
 from keras.layers import Dense, Dropout, LSTM, Bidirectional, Flatten, GlobalMaxPooling1D
 from keras.layers import Dense,Input,Flatten,concatenate,Dropout,Lambda
-from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau, TensorBoard
 from keras.optimizers import Adam
 import keras.backend as K #?
 
@@ -131,6 +131,14 @@ early_stopping = EarlyStopping(monitor = "val_loss",
                                 verbose=1,
                                 mode="min",
                                 restore_best_weights=False)
+
+reduce_lr = ReduceLROnPlateau(monitor="val_loss",
+                                factor=0.1,
+                                patience=2,
+                                verbose=1,
+                                mode="min",
+                                min_delta=0.0001)
+
 # 学習
 history = model.fit([train_features, train_segments],
                       train_labels,
@@ -139,7 +147,7 @@ history = model.fit([train_features, train_segments],
                       validation_data=([test_features, test_segments], test_labels),
                       shuffle=False,
                       verbose = 1,
-                      callbacks = [check_point, early_stopping])
+                      callbacks = [check_point, early_stopping, reduce_lr])
 
 # モデルの保存
 model.save('./models/saved_model_BERT')
