@@ -31,6 +31,7 @@
     git clone https://github.com/neologd/mecab-ipadic-neologd.git  
     cd mecab-ipadic-neologd  
     sudo bin/install-mecab-ipadic-neologd -n -a
+    (yesまたはnoを尋ねられたらyesを入力する)
 
 3. ターミナルから python quick_start.py を実行
 
