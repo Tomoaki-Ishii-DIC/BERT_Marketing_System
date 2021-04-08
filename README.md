@@ -25,6 +25,7 @@
 
     以下のコマンドを実行  
     pip install -r requirements.txt
+    cat requirements_aptitude.txt | xargs sudo apt install -y
 
     以下のコマンドを実行し、mecabの辞書をインストールする  
     git clone https://github.com/neologd/mecab-ipadic-neologd.git  
