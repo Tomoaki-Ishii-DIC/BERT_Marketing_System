@@ -6,9 +6,6 @@
 bert-tensorflow
 keras-bert
 sentencepiece
-mecab
-libmecab-dev
-mecab-ipadic-utf8
 mecab-python3
 unidic-lite
 pysimplegui
