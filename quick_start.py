@@ -25,8 +25,8 @@ from preprocessing import make_table
 #df_index, df_text = make_table.concat(df_trend, df_news)
 
 # 速度向上のため、csvから読み込む
-df_index = pd.read_csv('./datasets/df_index.csv')
-df_text = pd.read_csv('./datasets/df_text.csv')
+df_index = pd.read_csv('./quick_start_datasets/df_index.csv')
+df_text = pd.read_csv('./quick_start_datasets/df_text.csv')
 
 #################### ↓PySimpleGUI用コード ####################
 columns_list = df_index.columns.values[:-1]
