@@ -1,8 +1,10 @@
+
 #
 ####### requirements.txt #######
 #
 ###### Requirements without Version Specifiers ######
 #
+tensorflow-addons
 bert-tensorflow
 keras-bert
 sentencepiece
