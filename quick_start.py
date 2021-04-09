@@ -96,7 +96,7 @@ while True:
         X_test = np.array(X)
 
         #標準化（学習時のインスタンスを使用する）
-        scalerfile = './StandardScaler.pkl'#.sav
+        scalerfile = './quick_start_datasets/StandardScaler.pkl'#.sav
         scaler = pickle.load(open(scalerfile, 'rb'))
 
         scaler.fit(X_test)
