@@ -33,7 +33,7 @@
     sudo bin/install-mecab-ipadic-neologd -n -a  
     (yesまたはnoを尋ねられたらyesを入力する)
 
-3. ターミナルから python quick_start.py を実行
+3. リポジトリのフォルダにもどりターミナルから python quick_start.py を実行
 
     数秒待つと入力フォームが表示されるのでそれまで待機する  
     ![caption](./InputFormImage.jpg)
