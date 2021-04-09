@@ -24,13 +24,13 @@
 2. 必要なライブラリのインストール
 
     以下のコマンドを実行  
-    pip install -r requirements.txt
+    pip install -r requirements.txt  
     cat requirements_aptitude.txt | xargs sudo apt install -y
 
     以下のコマンドを実行し、mecabの辞書をインストールする  
     git clone https://github.com/neologd/mecab-ipadic-neologd.git  
     cd mecab-ipadic-neologd  
-    sudo bin/install-mecab-ipadic-neologd -n -a
+    sudo bin/install-mecab-ipadic-neologd -n -a  
     (yesまたはnoを尋ねられたらyesを入力する)
 
 3. ターミナルから python quick_start.py を実行
