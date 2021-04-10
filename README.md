@@ -232,7 +232,9 @@ Second stage用のラベルを前半の処理で作成しています。
 
 4. ファインチューニング用のラベルを作成する
 
-    ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。  
+    ./datasets_csv/finetuning/train/comments および ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。
+    作成したファイルを ./datasets_csv/finetuning/train/labels、./datasets_csv/finetuning/test/labels へ保管する。  
+
     ファイル名は以下の形式に従う。
 
     ```bash
@@ -259,11 +261,23 @@ Second stage用のラベルを前半の処理で作成しています。
 
     https://yoheikikuta.github.io/bert-japanese/
 
-6. python main_BERT.py を実行
+6. 必要なライブラリのインストール
+
+    以下のコマンドを実行  
+    pip install -r requirements.txt  
+    cat requirements_aptitude.txt | xargs sudo apt install -y
+
+    以下のコマンドを実行し、mecabの辞書をインストールする  
+    git clone https://github.com/neologd/mecab-ipadic-neologd.git  
+    cd mecab-ipadic-neologd  
+    sudo bin/install-mecab-ipadic-neologd -n -a  
+    (yesまたはnoを尋ねられたらyesを入力する)
+
+7. python main_BERT.py を実行
 
     BERTの学習に時間がかかるため、AWS EC2 などのGPU環境で実行することが望ましい。
 
-7. python pred_BERT.py を実行
+8. python pred_BERT.py を実行
 
         BERTの学習に時間がかかるため、AWS EC2 などのGPU環境で実行することが望ましい。  
         以下のファイルが作成されたか確認する。
@@ -273,13 +287,13 @@ Second stage用のラベルを前半の処理で作成しています。
         ※ ラベルy_trainはモデルが作成しているため、誤ったラベル付けがなされている可能性がある。  
         中身を確認して明らかにおかしい場合には対応するニュースコメントを確認しながら手直しで修正する。
 
-8. Self-Attention（キーワード）の確認
+9. Self-Attention（キーワード）の確認
 
     ./attention_excel/self_attention.xlsxを開き、 各ニュース記事に対応したシートを確認。  
     Self-Attention層の重みの数値が高いセルが赤く着色される。  
     重みの数値が高くなっている単語がネガポジ判定により寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
 
-9. 関連する時系列データの取得
+10. 関連する時系列データの取得
 
     インターネットから関連データを取得する。
 
@@ -289,7 +303,7 @@ Second stage用のラベルを前半の処理で作成しています。
     - その他の指標のデータ  
     任意のデータを取得して ./associated_data/Industry_indicator_data に保管する。
 
-10. 上記 9. の手順で取得したIndustry_indicator_dataを以下の形式に変形する  
+11. 上記 9. の手順で取得したIndustry_indicator_dataを以下の形式に変形する  
     （ファイル作成方法のサンプルがEdit_Tabledata.ipynbにあります）
 
     ファイル名：./associated_data/dataframe_indicator_index.csv  
@@ -306,9 +320,9 @@ Second stage用のラベルを前半の処理で作成しています。
 
       ※ feature_nameは任意の特徴量名
 
-11. python main_LSTM_ensemble.py を実行する
+12. python main_LSTM_ensemble.py を実行する
 
-12. python pred_LSTM_ensemble.py を実行する
+13. python pred_LSTM_ensemble.py を実行する
 
     ネガポジ判定結果を確認する。
 
