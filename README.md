@@ -279,12 +279,12 @@ Second stage用のラベルを前半の処理で作成しています。
 
 8. python pred_BERT.py を実行
 
-        以下のファイルが作成されたか確認する。
-        - ./datasetsフォルダ内のX_trainおよびy_train
-        - ./attention_excel/self_attention.xlsx
+    以下のファイルが作成されたか確認する。
+    - ./datasetsフォルダ内のX_trainおよびy_train
+    - ./attention_excel/self_attention.xlsx
 
-        ※ ラベルy_trainはモデルが作成しているため、誤ったラベル付けがなされている可能性がある。  
-        中身を確認して明らかにおかしい場合には対応するニュースコメントを確認しながら手直しで修正する。
+    ※ ラベルy_trainはモデルが作成しているため、誤ったラベル付けがなされている可能性がある。  
+    中身を確認して明らかにおかしい場合には対応するニュースコメントを確認しながら手直しで修正する。
 
 9. Self-Attention（キーワード）の確認
 
