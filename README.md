@@ -91,15 +91,13 @@
 このモデルは２段階のモデルになっています。
 
 ```bash
-・First stage
-  ・BERT（Keras_BERT）
-    ・事前学習済みモデルをファインチューニング
-    ・テストデータの推測を利用して各ニュースに対してのラベル付け
-    ・Self-Attention抽出によるキーワード把握
+・First stage : BERT（Keras_BERT）
+  ・事前学習済みモデルをファインチューニング
+  ・テストデータの推測を利用して各ニュースに対してのラベル付け
+  ・Self-Attention抽出によるキーワード把握
 
-・Second stage
-  ・LSTM & BERT Ensemble（Keras & Keras_BERT）
-    ・ニューステキストと各数値指標（トレンドや業界関連データ）による時系列学習と予測
+・Second stage : LSTM & BERT Ensemble（Keras & Keras_BERT）
+  ・ニューステキストと各数値指標（トレンドや業界関連データ）による時系列学習と予測
 ```
 
 ![caption](./ModelImage.jpeg)
