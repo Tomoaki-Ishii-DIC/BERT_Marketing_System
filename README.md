@@ -279,7 +279,6 @@ Second stage用のラベルを前半の処理で作成しています。
 
 8. python pred_BERT.py を実行
 
-        BERTの学習に時間がかかるため、AWS EC2 などのGPU環境で実行することが望ましい。  
         以下のファイルが作成されたか確認する。
         - ./datasetsフォルダ内のX_trainおよびy_train
         - ./attention_excel/self_attention.xlsx
