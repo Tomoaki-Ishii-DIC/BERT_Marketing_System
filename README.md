@@ -322,7 +322,7 @@ Second stage用のラベルを前半の処理で作成しています。
 13. python pred_LSTM_ensemble.py を実行する
 
     ネガポジ判定結果を確認する。  
-    linux OS ではPySimpleGUIが使用できない可能性があるため、その際はscpコマンドなどを利用してローカルにコピーして実行してください。    
+    LinuxではPySimpleGUIが使用できない可能性があるため、その際はscpコマンドなどを利用してローカルにコピーして実行してください。    
 
 
 作業完了
