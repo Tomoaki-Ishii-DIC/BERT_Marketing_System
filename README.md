@@ -230,7 +230,7 @@ Second stage用のラベルを前半の処理で作成しています。
 
 4. ファインチューニング用のラベルを作成する
 
-    ./datasets_csv/finetuning/train/comments および ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。
+    ./datasets_csv/finetuning/train/comments および ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。  
     作成したファイルを ./datasets_csv/finetuning/train/labels、./datasets_csv/finetuning/test/labels へ保管する。  
 
     ファイル名は以下の形式に従う。
