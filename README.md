@@ -15,7 +15,7 @@
 
     リポジトリをクローンしたフォルダに移動し、以下のコマンドを実行
 
-    wget "https://www.dropbox.com/s/omq1tjiplf735so/quick_start_model_BERT.zip"
+    wget "https://www.dropbox.com/s/nkjhsa4p2t2nec1/quick_start_model_BERT.zip"  
 
     unzip quick_start_model_BERT.zip
 
