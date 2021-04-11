@@ -296,6 +296,7 @@ Second stage用のラベルを前半の処理で作成しています。
 
     - Googleトレンドデータの取得  
     Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
+    （開始日付やサンプル数を一致させてください。また、Excelなどの表計算ソフトで編集すると冒頭に空白行が追加されてしまうため、空白を削除の上、csvに書き出してください。）  
 
     - その他の指標のデータ  
     任意のデータを取得して ./associated_data/Industry_indicator_data に保管する。
