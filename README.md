@@ -222,13 +222,25 @@ Second stage用のラベルを前半の処理で作成しています。
           └─ news_text_xxx.txt  
     ```
 
-3. プログラムで表に変換（csv出力）
+3. 必要なライブラリのインストール
+
+    以下のコマンドを実行  
+    pip install -r requirements.txt  
+    cat requirements_aptitude.txt | xargs sudo apt install -y
+
+    以下のコマンドを実行し、mecabの辞書をインストールする  
+    git clone https://github.com/neologd/mecab-ipadic-neologd.git  
+    cd mecab-ipadic-neologd  
+    sudo bin/install-mecab-ipadic-neologd -n -a  
+    (yesまたはnoを尋ねられたらyesを入力する)
+
+4. プログラムで表に変換（csv出力）
 
     python make_csv.py を実行する。  
 
     ./datasets_csv フォルダにファイルが作成されたことを確認する。
 
-4. ファインチューニング用のラベルを作成する
+5. ファインチューニング用のラベルを作成する
 
     ./datasets_csv/finetuning/train/comments および ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。  
     作成したファイルを ./datasets_csv/finetuning/train/labels、./datasets_csv/finetuning/test/labels へ保管する。  
@@ -253,23 +265,11 @@ Second stage用のラベルを前半の処理で作成しています。
     |  positive  |
     |  negative  |
 
-5. 日本語学習済みモデルをダウンロードする
+6. 日本語学習済みモデルをダウンロードする
 
     以下の学習済みモデルを利用しているため、下記URLにアクセスしGoogleドライブへのリンクから「bert-wiki-ja」フォルダをダウンロードして ./downloads フォルダへ入れる。
 
     https://yoheikikuta.github.io/bert-japanese/
-
-6. 必要なライブラリのインストール
-
-    以下のコマンドを実行  
-    pip install -r requirements.txt  
-    cat requirements_aptitude.txt | xargs sudo apt install -y
-
-    以下のコマンドを実行し、mecabの辞書をインストールする  
-    git clone https://github.com/neologd/mecab-ipadic-neologd.git  
-    cd mecab-ipadic-neologd  
-    sudo bin/install-mecab-ipadic-neologd -n -a  
-    (yesまたはnoを尋ねられたらyesを入力する)
 
 7. python main_BERT.py を実行
 
