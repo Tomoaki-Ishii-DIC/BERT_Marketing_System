@@ -20,19 +20,19 @@ def make_ds():
 
     # ニュースコメントのファイル数を取得
     file_count = 0
-    for p in csv_folder:
-        DIR = p + '/comments'
+    for csv_path in csv_folder:
+        DIR = csv_path + '/comments'
         file_count += len([name for name in os.listdir(DIR) if name[-4:] == '.csv'])
 
     # ニュースコメントのデータセットを作成
-    for j, p in enumerate(csv_folder[:2]):
+    for j, csv_path in enumerate(csv_folder[:2]):
         cols = ['text', 'reply', 'good', 'bad']
         df_temp = pd.DataFrame(columns=cols)
 
         for i in range(file_count):
             n_file = str(i+1).zfill(3)
             file_name = "comment_dataset_" + n_file + ".csv"
-            file_path = (p + "/comments/" + file_name)
+            file_path = (csv_path + "/comments/" + file_name)
             if not os.path.isfile(file_path):
                 continue
             df_cmt = pd.read_csv(file_path, index_col=0)
@@ -49,14 +49,14 @@ def make_ds():
     #print("finetuning test:\n", df_fine_test_comments)
 
     # 各ニュースコメントに対するラベルを作成
-    for j, p in enumerate(csv_folder):
+    for j, csv_path in enumerate(csv_folder):
         cols = ['label']
         df_temp = pd.DataFrame(columns=cols)
 
         for i in range(file_count):
             n_file = str(i+1).zfill(3)
             file_name = "comment_labels_" + n_file + ".csv"
-            file_path = (p + "/labels/" + file_name)
+            file_path = (csv_path + "/labels/" + file_name)
             if not os.path.isfile(file_path):
                 continue
             df_labels = pd.read_csv(file_path)#, index_col=0
