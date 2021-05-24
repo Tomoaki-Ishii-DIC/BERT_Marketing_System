@@ -21,7 +21,7 @@ def make_cmt(input_path, output_path):
         file_count += len([name for name in os.listdir(input_path[p]) if name[-4:] == '.txt'])
 
     # データセット作成
-    for p in range(3):
+    for path_idx in range(3):
         converted_files_count = 0
         unconverted_files_count = 0
         saved_csv_count = 0
@@ -30,7 +30,7 @@ def make_cmt(input_path, output_path):
             # ゼロ埋め
             n_file = str(i+1).zfill(3)
             file_name = "comment_text_" + n_file + ".txt"
-            f_path = (input_path[p] + "/" + file_name)
+            f_path = (input_path[path_idx] + "/" + file_name)
             if not os.path.isfile(f_path):
                 unconverted_files_count += 1
                 continue
@@ -74,7 +74,7 @@ def make_cmt(input_path, output_path):
 
             # 保存処理
             df = pd.DataFrame(data_set, columns=['id', 'str_date', 'text', 'reply', 'good', 'bad'])
-            save_csv_name = output_path[p] + "/" + "comment_dataset_" + n_file + ".csv"
+            save_csv_name = output_path[path_idx] + "/" + "comment_dataset_" + n_file + ".csv"
 
             if not os.path.exists(save_csv_name):
                 df[['text', 'reply', 'good', 'bad']].to_csv(save_csv_name)
@@ -84,10 +84,10 @@ def make_cmt(input_path, output_path):
         not_overwritten = converted_files_count - saved_csv_count
         if not_overwritten > 0:
             print("{} に{}個のcsvファイルが作成されました。{}個のファイルが上書きされませんでした。"\
-                .format(output_path[p], saved_csv_count, not_overwritten))
+                .format(output_path[path_idx], saved_csv_count, not_overwritten))
         else:
             print("{} に{}個のcsvファイルが作成されました。"\
-                .format(output_path[p], saved_csv_count))
+                .format(output_path[path_idx], saved_csv_count))
 
         unknown = file_count-(converted_files_count+unconverted_files_count)
         if unknown > 0:
@@ -113,7 +113,7 @@ def make_news(input_path, output_path, output_file_name):
         file_count += len([name for name in os.listdir(input_path[p]) if name[-4:] == '.txt'])
 
     # データセット作成
-    for p in range(3):
+    for path_idx in range(3):
         converted_files_count = 0
         unconverted_files_count = 0
         saved_csv_count = 0
@@ -122,7 +122,7 @@ def make_news(input_path, output_path, output_file_name):
         for i in range(file_count):
             n_file = str(i+1).zfill(3)
             file_name = "news_text_" + n_file + ".txt"
-            f_path = (input_path[p] + "/" + file_name)
+            f_path = (input_path[path_idx] + "/" + file_name)
             if not os.path.isfile(f_path):
                 unconverted_files_count += 1
                 continue
@@ -169,7 +169,7 @@ def make_news(input_path, output_path, output_file_name):
         # ソートはここでは行わず結合する直前に行う（ラベルとずれてしまうため）
         #df_s = df.sort_values('date')
 
-        save_csv_name = output_path[p] + "/" + output_file_name[p]
+        save_csv_name = output_path[path_idx] + "/" + output_file_name[path_idx]
         if not os.path.exists(save_csv_name):
             df[['date', 'title', 'text']].to_csv(save_csv_name, index=False)
             saved_csv_count += 1
@@ -178,10 +178,10 @@ def make_news(input_path, output_path, output_file_name):
         not_overwritten = 1 - saved_csv_count
         if not_overwritten > 0:
             print("{} に{}個のcsvファイルが作成されました。{}個のファイルが上書きされませんでした。"\
-                .format(output_path[p], saved_csv_count, not_overwritten))
+                .format(output_path[path_idx], saved_csv_count, not_overwritten))
         else:
             print("{} に{}個のcsvファイルが作成されました。"\
-                .format(output_path[p], saved_csv_count))
+                .format(output_path[path_idx], saved_csv_count))
 
         unknown = file_count-(converted_files_count+unconverted_files_count)
         if unknown > 0:
