@@ -16,8 +16,9 @@ from keras.models import load_model
 from preprocessing import preprocessing
 from preprocessing import make_table
 
+from transformers import BertJapaneseTokenizer
 
-## デーブルの作成（トレンドデータ、テキスト）
+############ デーブルの作成（トレンドデータ、テキスト）############
 #df_trend = make_table.trend()
 #df_news = make_table.text()
 
@@ -43,6 +44,8 @@ inputs_list.append([sg.Button('実行'), sg.Button('終了')])
 
 window = sg.Window('推測用データ入力', inputs_list)
 
+tknz = BertJapaneseTokenizer.from_pretrained('cl-tohoku/bert-base-japanese')
+
 while True:
     event, values = window.read()
 
@@ -61,7 +64,7 @@ while True:
         if maxlen_text < 512:
             maxlen_text = 512
 
-        pred_features = preprocessing.get_indice(input_text[0], maxlen_text)
+        pred_features = preprocessing.get_indice(input_text[0], maxlen_text, tknz)
 
         #512対応
         if maxlen_text > 512:
@@ -117,10 +120,8 @@ while True:
                             outputs=[model_BERT.output,
                             model_BERT.get_layer('Encoder-12-MultiHeadSelfAttention').output])
 
-        # ローカルJSONファイルの読み込み
-        json_path = "./downloads/bert-wiki-ja_config/bert_finetuning_config_v1.json"
-
         # トークンの最大値を取得
+        json_path = './BERT-base_mecab-ipadic-bpe-32k/config.json'
         with open(json_path) as f:
             data = json.load(f)
         maxlen = data["max_position_embeddings"]
