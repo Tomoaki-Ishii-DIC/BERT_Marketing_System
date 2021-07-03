@@ -5,8 +5,7 @@
 
 # Quick Start
 
-学習済みのモデルが用意してありますので、試しに動かしたいという方はこちらを実行してください。  
-（データ収集や学習の仕方はUser's Manualにあります。）
+学習済みのモデルが用意してありますので、試しに動かしたいという方はこちらを実行してください。（データ収集や学習の仕方はUser's Manualにあります。）
 
 一例として新型コロナ関連の音楽ニュースとそれに関連する数値データを学習させてあります。  
 指定の数値データとコロナ禍における音楽ビジネス施策に関するプレスリリーステキストを入力すると、その施策に対する世間の反応を推測して出力します。
@@ -15,38 +14,48 @@
 
     リポジトリをクローンしたフォルダに移動し、以下のコマンドを実行
 
-    wget "https://www.dropbox.com/s/gy1zmpkn1zdcg1n/quick_start_model_BERT.zip"
+    wget "https://www.dropbox.com/s/kopfb8ff2q60n23/quick_start_model_BERT.zip"  
 
     unzip quick_start_model_BERT.zip
 
     （git-hubの容量制限の問題によりBERTモデルをgitにあげることができなかったため、上記手順によりダウンロードをお願いします。）
 
-2. 必要なライブラリのインストール
+2. 日本語学習済みモデルをダウンロードする
+
+    東北大学版BERTモデルを利用しているため、「BERT-base_mecab-ipadic-bpe-32k.tar.xz」をダウンロードする(https://www.nlp.ecei.tohoku.ac.jp/~m-suzuki/bert-japanese/)。  
+
+    https://www.nlp.ecei.tohoku.ac.jp/~m-suzuki/bert-japanese/BERT-base_mecab-ipadic-bpe-32k.tar.xz
+    　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+    ダウンロードしたら解凍して BERT_Marketing_System フォルダへ保管する。
+
+3. 必要なライブラリのインストール
 
     以下のコマンドを実行  
-    pip install -r requirements.txt
+    pip install -r requirements.txt  
 
-3. ターミナルから python quick_start.py を実行
+4. リポジトリのフォルダにもどりターミナルから python quick_start.py を実行
 
-    数秒待つと入力フォームが表示されるのでそれまで待機する  
-    ![caption](./InputFormImage.jpg)
+    数秒待つと入力フォームが表示されるのでそれまで待機する
 
-4. 入力フォームに当日の各種データを入力する
+5. 入力フォームに当日の各種データを入力する
 
-    以下の値をインターネット等で確認して入力する。  
-    （使用感を確かめたいだけであれば適当な数値で構いません。また、あくまでQuickStart用に選んだ数値ですので、実際には項目を自由に選んで学習させることが可能です。）
+    以下の値をインターネット等で確認して入力する。
+   ![caption](./InputFormImage.jpg)
+   ① googleトレンドで検索トレンドを確認して入力 ※1  
+   ② 新型コロナウイルス感染症新規感染者数、日経平均株価を入力 ※1  
+   ③ 予測したいプレスリリースの文章を入力 ※2  
 
-5. 入力フォームに予測したいプレスリリースの文章を入力
+   ※1 使用感を確かめたいだけであれば適当な数値で構いません。また、あくまでQuickStart用に選んだ数値ですので、実際には項目を自由に選んで学習させることが可能です。  
+   ※2 プレスリリースがない場合はネットニュースの記事などを貼り付けてください。
 
-    プレスリリースがない場合はネットニュースの記事などを貼り付ける
-
-6. 実行ボタンを押す
+7. 実行ボタンを押す
 
     数秒後に予測結果がポップアップで出力されるので結果を確認する（PositiveまたはNegative）。  
-    確認したら終了ボタンをクリック。
+   ![caption](./OutputImage.jpg)
+    確認したらOKボタンをクリックする。
 
-    続けて推測したい場合はデータを入力し直して実行ボタンをクリック。
-    終了する場合は終了ボタンをクリックする。
+    続けて推測したい場合はデータを入力し直して実行ボタンをクリック。  
+    終了する場合は終了ボタンをクリック。
 
 作業完了
 
@@ -54,7 +63,7 @@
 
 このプログラムは自社のプレスリリースとそれに関連する時系列指標データを入力するとプレスリリースに対する一般消費者の反応の予測を出力するプログラムです。
 
-例えば以下のような課題解決に活用できます。
+例えば以下のような課題解決に活用できます
 - 自社の新しい施策に対しての反応が気になる
 - プレスリリースの文章表現中にネガティブな印象を与える要素がないか確認したい
 - マーケティングにインターネット上の情報を活用したい
@@ -73,42 +82,50 @@
 そして、データセット作成のためにBERTモデルのSelf-Attention層の重みをExcelで書き出し、ネガポジ判定の根拠を可視化するようにしました。  
 重みがかかっている単語がその文のキーワードであると解釈できますので、そのキーワードの検索トレンドの数値などを取得して特徴量として使用することができます。
 
+### モデル概要
 
 このモデルは２段階のモデルになっています。
 
-モデル概要
-
 ```bash
-- First stage
-	- BERT（Keras_BERT）
-		- 事前学習済みモデルをファインチューニング
-		- 推測を利用した各ニュースに対してのラベル付け（ネガポジ）
-		- Self-Attention抽出によるキーワード把握
+・First stage : BERT（Keras_BERT）
+  ・事前学習済みモデルをファインチューニング
+  ・テストデータの推測を利用して各ニュースに対してのラベル付け
+  ・Self-Attention抽出によるキーワード把握
 
-- Second stage
-	- LSTM & BERT Ensemble（Keras & Keras_BERT）
-		- ニューステキストと各数値指標（トレンドや業界関連データ）による時系列学習と予測
+・Second stage : LSTM & BERT Ensemble（Keras & Keras_BERT）
+  ・ニューステキストと各数値指標（トレンドや業界関連データ）による時系列学習と予測
 ```
 
-![caption](./ModelImage.jpg)
+![caption](./ModelImage.jpeg)
+
+First stageでBERTのファインチューニングを行い、推測時にSelf-Attentionを抜き出します。  
+抜き出したSelf-Attentionからキーワードを把握し、それを元にSecond stageのデータセットを集めます。  
+Second stageでニューステキストとそれに関連する数値データを使ってネガポジ推測モデルを学習します。
+
+また、ラベル付けの工数を削減するために、試みとしてBERT自身に自動でラベルを作成させるモデルにしてみました。  
+Second stage用のラベルを前半の処理で作成しています。
+
+### データセット
 
 利用するためにはまず学習用のデータを集める必要があります。
 
 このモデルは２段階のモデルになっており、それぞれの段階において以下の学習データが必要です。
 
 ```bash
-- First stage
-	- ニュース記事のテキスト（数十件）
-	- そのニュースに対するコメントのテキスト（全て）
+・First stage
+  ・ニュース記事のテキスト（数十件）
+  ・そのニュースに対するコメントのテキスト（全て）
 
-- Second stage
-	- キーワード（Second stageの出力）のトレンドデータ
-	- 事業に関連する指標の時系列データ（いくつか）
+・Second stage
+  ・キーワード（Second stageの出力）のトレンドデータ
+  ・事業に関連する指標の時系列データ（いくつか）
 ```
 
 データ収集については、インターネットでニュース記事とそれに対するコメントをテキストファイルで取得します。（下記マニュアル 1. 参照）  
 著作権法上、データ分析を目的とする複製は認められています。  
 しかし、自動取得を規約で許可していないサイトもありますので、収集方法としては対象のニュースページを開いて、内容をコピー＆ペーストすることになると思います。
+
+### 注意点
 
 このモデルを利用するにあたって、以下の問題点を考慮する必要があります。
 - 判定したいプレスリリースごとに学習し直さないといけない  
@@ -201,15 +218,29 @@
           └─ news_text_xxx.txt  
     ```
 
-3. プログラムで表に変換（csv出力）
+3. 必要なライブラリのインストール
+
+    以下のコマンドを実行  
+    pip install -r requirements.txt  
+    cat requirements_aptitude.txt | xargs sudo apt install -y
+
+    以下のコマンドを実行し、mecabの辞書をインストールする  
+    git clone https://github.com/neologd/mecab-ipadic-neologd.git  
+    cd mecab-ipadic-neologd  
+    sudo bin/install-mecab-ipadic-neologd -n -a  
+    (yesまたはnoを尋ねられたらyesを入力する)
+
+4. プログラムで表に変換（csv出力）
 
     python make_csv.py を実行する。  
 
     ./datasets_csv フォルダにファイルが作成されたことを確認する。
 
-4. ファインチューニング用のラベルを作成する
+5. ファインチューニング用のラベルを作成する
 
-    ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。  
+    ./datasets_csv/finetuning/train/comments および ./datasets_csv/finetuning/test/comments 内のファイルを開きそれぞれのコメントに対応するラベルをつける。  
+    作成したファイルを ./datasets_csv/finetuning/train/labels、./datasets_csv/finetuning/test/labels へ保管する。  
+
     ファイル名は以下の形式に従う。
 
     ```bash
@@ -230,7 +261,7 @@
     |  positive  |
     |  negative  |
 
-5. 日本語学習済みモデルをダウンロードする
+6. 日本語学習済みモデルをダウンロードする
 
     東北大学版BERTモデルを利用しているため、「BERT-base_mecab-ipadic-bpe-32k.tar.xz」をダウンロードする(https://www.nlp.ecei.tohoku.ac.jp/~m-suzuki/bert-japanese/)。  
 
@@ -238,37 +269,37 @@
     　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
     ダウンロードしたら解凍して BERT_Marketing_System フォルダへ保管する。
 
-6. python main_BERT.py を実行
+7. python main_BERT.py を実行
 
     BERTの学習に時間がかかるため、AWS EC2 などのGPU環境で実行することが望ましい。
 
-7. python pred_BERT.py を実行
+8. python pred_BERT.py を実行
 
-        BERTの学習に時間がかかるため、AWS EC2 などのGPU環境で実行することが望ましい。  
-        以下のファイルが作成されたか確認する。
-        - ./datasetsフォルダ内のX_trainおよびy_train
-        - ./attention_excel/self_attention.xlsx
+    以下のファイルが作成されたか確認する。
+    - ./datasetsフォルダ内のX_trainおよびy_train
+    - ./attention_excel/self_attention.xlsx
 
-        ※ ラベルy_trainはモデルが作成しているため、誤ったラベル付けがなされている可能性がある。  
-        中身を確認して明らかにおかしい場合には対応するニュースコメントを確認しながら手直しで修正する。
+    ※ ラベルy_trainはモデルが作成しているため、誤ったラベル付けがなされている可能性がある。  
+    中身を確認して明らかにおかしい場合には対応するニュースコメントを確認しながら手直しで修正する。
 
-8. Self-Attention（キーワード）の確認
+9. Self-Attention（キーワード）の確認
 
     ./attention_excel/self_attention.xlsxを開き、 各ニュース記事に対応したシートを確認。  
     Self-Attention層の重みの数値が高いセルが赤く着色される。  
     重みの数値が高くなっている単語がネガポジ判定により寄与した単語と考えられるため、その単語の前後の文脈からキーワードを探し出す。  
 
-9. 関連する時系列データの取得
+10. 関連する時系列データの取得
 
     インターネットから関連データを取得する。
 
     - Googleトレンドデータの取得  
     Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
+    （開始日付やサンプル数を一致させてください。また、Excelなどの表計算ソフトで編集すると冒頭に空白行が追加されてしまうため、空白を削除の上、csvに書き出してください。）  
 
     - その他の指標のデータ  
     任意のデータを取得して ./associated_data/Industry_indicator_data に保管する。
 
-10. 上記 9. の手順で取得したIndustry_indicator_dataを以下の形式に変形する  
+11. 上記 9. の手順で取得したIndustry_indicator_dataを以下の形式に変形する  
     （ファイル作成方法のサンプルがEdit_Tabledata.ipynbにあります）
 
     ファイル名：./associated_data/dataframe_indicator_index.csv  
@@ -285,11 +316,12 @@
 
       ※ feature_nameは任意の特徴量名
 
-11. python main_LSTM_ensemble.py を実行する
+12. python main_LSTM_ensemble.py を実行する
 
-12. python pred_LSTM_ensemble.py を実行する
+13. python pred_LSTM_ensemble.py を実行する
 
-    ネガポジ判定結果を確認する。
+    ネガポジ判定結果を確認する。  
+    LinuxではPySimpleGUIが使用できない可能性があるため、その際はscpコマンドなどを利用してローカルにコピーして実行してください。    
 
 
 作業完了
