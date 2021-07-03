@@ -4,6 +4,7 @@ import os
 import json
 import openpyxl
 
+import tensorflow_addons as tfa
 from keras.models import load_model
 from keras_bert import load_trained_model_from_checkpoint
 from keras_bert import get_custom_objects
@@ -11,10 +12,11 @@ from keras import Input, Model
 
 from preprocessing import preprocessing
 
+from transformers import BertJapaneseTokenizer
 
 # モデルの読み込み・作成
 model_path = './models/saved_model_BERT'
-model = load_model(model_path, custom_objects=get_custom_objects())
+model = load_model(model_path, custom_objects=get_custom_objects(), compile=False)
 
 # outputs=[model.output,model.get_layer]とすることで"self_Attention"も出力できるようにする
 model = Model(inputs=model.input,
@@ -22,7 +24,7 @@ model = Model(inputs=model.input,
                         model.get_layer('Encoder-12-MultiHeadSelfAttention').output])
 
 # ローカルJSONファイルの読み込み
-json_path = "./downloads/bert-wiki-ja_config/bert_finetuning_config_v1.json"
+json_path = "./BERT-base_mecab-ipadic-bpe-32k/config.json"
 
 # トークンの最大値を取得
 with open(json_path) as f:
@@ -62,6 +64,8 @@ c2.value =  "詳細は次のシート以降を参照してください。"
 # excelファイルの保存
 wb.save(excel_file)
 
+tknz = BertJapaneseTokenizer.from_pretrained('cl-tohoku/bert-base-japanese')
+
 # 推測処理とラベルの作成
 y_train = []
 for i in range(file_count):
@@ -83,11 +87,10 @@ for i in range(file_count):
     pred_list = []
     good_ratio_list = []
     for j in range(len(df_tests_features)):
-        #feature = df_tests_features.loc[j]['feature']
         feature = df_tests_features.loc[j]['text']
 
         test_features = []
-        indices, tokens = preprocessing.get_indice_pred(feature, maxlen)
+        indices, tokens = preprocessing.get_indice_pred(feature, maxlen, tknz)
         test_features.append(indices)
         test_features = np.array(test_features)
 
