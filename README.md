@@ -293,11 +293,13 @@ Second stage用のラベルを前半の処理で作成しています。
     インターネットから関連データを取得する。
 
     - Googleトレンドデータの取得  
-    Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline ディレクトリを作成して保管する。  
+    Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードする。  
+     ./associated_data/multiTimeline ディレクトリを作成して保管する。  
     （開始日付やサンプル数を一致させてください。また、Excelなどの表計算ソフトで編集すると冒頭に空白行が追加されてしまうため、空白を削除の上、csvに書き出してください。）  
 
     - その他の指標のデータ  
-    任意のデータを取得して ./associated_data/Industry_indicator_data ディレクトリを作成して保管する。
+    任意のデータを取得する。  
+    ./associated_data/Industry_indicator_data ディレクトリを作成して保管する。
 
 11. 上記 9. の手順で取得したIndustry_indicator_dataを以下の形式に変形する  
     （ファイル作成方法のサンプルがEdit_Tabledata.ipynbにあります）
