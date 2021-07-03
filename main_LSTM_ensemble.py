@@ -4,6 +4,7 @@ import os
 import sys
 import os
 import pickle
+import json
 
 from keras_bert import load_trained_model_from_checkpoint
 
@@ -22,6 +23,7 @@ from preprocessing import preprocessing
 from preprocessing import make_datasets
 from preprocessing import change_config
 
+from transformers import BertJapaneseTokenizer
 
 def make_timestep_dataset(X_dataset, y_dataset, n_steps):
     """
@@ -66,8 +68,8 @@ def create_model_BERT():
     ----------------
 
     """
-    config_file = os.path.join('./downloads/bert-wiki-ja_config', 'bert_lstm_config_v1.json')
-    checkpoint_file = os.path.join('./downloads/bert-wiki-ja', 'model.ckpt-1400000')
+    config_file = os.path.join('./BERT-base_mecab-ipadic-bpe-32k', 'config.json')
+    checkpoint_file = os.path.join('./BERT-base_mecab-ipadic-bpe-32k', 'model.ckpt')
 
     pre_trained_model = load_trained_model_from_checkpoint(config_file,
                                                             checkpoint_file,
@@ -134,7 +136,13 @@ val_samples = int(n_sample*VAL_SPLIT)
 train_samples = int(n_sample-val_samples)
 
 #サイズはBERTモデルの最大サイズ５１２に固定する
-maxlen=512
+#maxlen=512
+
+# トークンの最大値を取得
+json_path = "./BERT-base_mecab-ipadic-bpe-32k/config.json"
+with open(json_path) as f:
+    data = json.load(f)
+maxlen = data["max_position_embeddings"]
 
 #テキストデータを入れるために使う空のテーブルを用意
 ndarray_features = np.empty((len(df_text), maxlen))
@@ -182,7 +190,7 @@ LR = 1e-4
 EPOCH = 20
 
 # 設定の変更
-change_config.set_config(SEQ_LEN)
+#change_config.set_config(SEQ_LEN)
 
 # モデルの作成
 model_BERT = create_model_BERT()
