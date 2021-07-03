@@ -6,6 +6,8 @@ import string
 import sentencepiece as spm
 import numpy as np
 
+from transformers import BertJapaneseTokenizer
+from tensorflow import keras
 
 def preprocessing_text(text):
     """
@@ -76,7 +78,6 @@ def get_max(X):
         tokens.extend(tokenized_text)#追加
         #tokens.extend(sp.encode_as_pieces(feature))# sentence piece
         tokens.append('[SEP]')
-        #print("テキストのデータ :\n",tokens)
         number = len(tokens)
         numbers.append(number)
 
@@ -85,7 +86,7 @@ def get_max(X):
     return max_token_num
 
 
-def get_indice(feature, maxlen):
+def get_indice(feature, maxlen, tknz):
     """
     maxlen分のID化された文を返す関数
 
@@ -96,35 +97,34 @@ def get_indice(feature, maxlen):
     maxlen : int
         最大トークン数
     """
-    sp = spm.SentencePieceProcessor()
-    sp.Load('./downloads/bert-wiki-ja/wiki-ja.model')
 
-    # インデックス ０で埋める
-    indices = np.zeros((maxlen), dtype = np.int32)
     # 最初に[CLS]、最後に'[SEP]をつけてトークン作る
     tokens = []
-    tokens.append('[CLS]')
-    pre_text = preprocessing_text(feature)#追加
-    tokenized_text = tokenizer_mecab(pre_text)#追加
-    tokens.extend(tokenized_text)#追加
-    #tokens.extend(sp.encode_as_pieces(feature))# sentence piece
-    tokens.append('[SEP]')
+    pre_text = preprocessing_text(feature)
+    tokens = tknz.encode(pre_text)
 
+    #パティング（pad_sequences）後ろを埋める。長い場合は後ろを切り詰め。
+    #pad_sequencesは二次元の入力が必要なため、[tokens]としてトークンの次元[0]だけ取り出す
+    #indices = keras.preprocessing.sequence.pad_sequences([tokens],
+    #                                                    maxlen=maxlen,
+    #                                                    dtype='int32',
+    #                                                    padding='post',
+    #                                                    truncating='post',
+    #                                                    value=0)[0]
+
+    #パディング
+    indices = np.zeros((maxlen), dtype = np.int32)
     for t, token in enumerate(tokens):
         # 最大単語数までトークンの単語をindicesに入れていく
         if t >= maxlen:
             break
-        try:
-            indices[t] = sp.piece_to_id(token)# id化してくれる？
-        except:
-            logging.warn(f'{token} is unknown.')# コメントしてくれる
-            indices[t] = sp.piece_to_id('<unk>')# id化してくれる？unknown
+        indices[t] = token
 
     # 最大単語数分のID化された文を返す
     return indices
 
 
-def get_indice_pred(feature, maxlen):
+def get_indice_pred(feature, maxlen, tknz):
     """
     maxlen分のID化された文を返す関数（推測用）
 
@@ -135,26 +135,24 @@ def get_indice_pred(feature, maxlen):
     maxlen : int
         最大トークン数
     """
-    sp = spm.SentencePieceProcessor()
-    sp.Load('./downloads/bert-wiki-ja/wiki-ja.model')
-
-    indices = np.zeros((maxlen), dtype=np.int32)
-
     tokens = []
-    tokens.append('[CLS]')
-    pre_text = preprocessing_text(feature)#追加
-    tokenized_text = tokenizer_mecab(pre_text)#追加
-    tokens.extend(tokenized_text)#追加
-    #tokens.extend(sp.encode_as_pieces(feature))
-    tokens.append('[SEP]')
+    pre_text = preprocessing_text(feature)
+    tokens = tknz.encode(pre_text)
 
+    #パティング（pad_sequences）後ろを埋める。長い場合は後ろを切り詰め。
+    #pad_sequencesは二次元の入力が必要なため、[tokens]としてトークンの次元[0]だけ取り出す
+    #indices = keras.preprocessing.sequence.pad_sequences([tokens],
+    #                                                    maxlen=maxlen,
+    #                                                    dtype='int32',
+    #                                                    padding='post',
+    #                                                    truncating='post',
+    #                                                    value=0)[0]
+
+    #パディング
+    indices = np.zeros((maxlen), dtype=np.int32)
     for t, token in enumerate(tokens):
         if t >= maxlen:
             break
-        try:
-            indices[t] = sp.piece_to_id(token)
-        except:
-            logging.warn('unknown')
-            indices[t] = sp.piece_to_id('<unk>')
+        indices[t] = token
 
     return indices, tokens
