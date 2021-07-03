@@ -12,7 +12,7 @@
 
 1. QuickStartモデルのダウンロード
 
-    リポジトリをクローンしたフォルダに移動し、以下のコマンドを実行
+    リポジトリをクローンしたディレクトリに移動し、以下のコマンドを実行
 
     wget "https://www.dropbox.com/s/kopfb8ff2q60n23/quick_start_model_BERT.zip"  
 
@@ -26,14 +26,14 @@
 
     https://www.nlp.ecei.tohoku.ac.jp/~m-suzuki/bert-japanese/BERT-base_mecab-ipadic-bpe-32k.tar.xz
     　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-    ダウンロードしたら解凍して BERT_Marketing_System フォルダへ保管する。
+    ダウンロードしたら解凍して BERT_Marketing_System ディレクトリへ保管する。
 
 3. 必要なライブラリのインストール
 
     以下のコマンドを実行  
     pip install -r requirements.txt  
 
-4. リポジトリのフォルダにもどりターミナルから python quick_start.py を実行
+4. リポジトリのディレクトリにもどりターミナルから python quick_start.py を実行
 
     数秒待つと入力フォームが表示されるのでそれまで待機する
 
@@ -138,7 +138,7 @@ Second stage用のラベルを前半の処理で作成しています。
 
 1. ニュース記事・コメント収集
 
-    ニュースの記事とコメントをコピーしてテキストファイルで保存(任意のフォルダへ)。
+    ニュースの記事とコメントをコピーしてテキストファイルで保存(任意のディレクトリへ)。
 
     以下の形式で保存すること（番号は001から始まる通し番号にする）。  
 
@@ -183,9 +183,9 @@ Second stage用のラベルを前半の処理で作成しています。
     ※番号は001から始まる通し番号（ニュース記事と対応させること）
     ```
 
-2. ファイルをフォルダに振り分ける
+2. ファイルをディレクトリに振り分ける
 
-    ./datasets_text フォルダ内に以下の様に振り分ける（ファイル名は変更しないこと）。  
+    ./datasets_text ディレクトリ内に以下の様に振り分ける（ファイル名は変更しないこと）。  
 
     - finetuning
       - BERTのファインチューニング用
@@ -234,7 +234,7 @@ Second stage用のラベルを前半の処理で作成しています。
 
     python make_csv.py を実行する。  
 
-    ./datasets_csv フォルダにファイルが作成されたことを確認する。
+    ./datasets_csv ディレクトリにファイルが作成されたことを確認する。
 
 5. ファインチューニング用のラベルを作成する
 
@@ -267,7 +267,7 @@ Second stage用のラベルを前半の処理で作成しています。
 
     https://www.nlp.ecei.tohoku.ac.jp/~m-suzuki/bert-japanese/BERT-base_mecab-ipadic-bpe-32k.tar.xz
     　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-    ダウンロードしたら解凍して BERT_Marketing_System フォルダへ保管する。
+    ダウンロードしたら解凍して BERT_Marketing_System ディレクトリへ保管する。
 
 7. python main_BERT.py を実行
 
@@ -276,7 +276,7 @@ Second stage用のラベルを前半の処理で作成しています。
 8. python pred_BERT.py を実行
 
     以下のファイルが作成されたか確認する。
-    - ./datasetsフォルダ内のX_trainおよびy_train
+    - ./datasetsディレクトリ内のX_trainおよびy_train
     - ./attention_excel/self_attention.xlsx
 
     ※ ラベルy_trainはモデルが作成しているため、誤ったラベル付けがなされている可能性がある。  
@@ -293,11 +293,11 @@ Second stage用のラベルを前半の処理で作成しています。
     インターネットから関連データを取得する。
 
     - Googleトレンドデータの取得  
-    Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline に保管する。  
+    Googleトレンドで上記キーワードのトレンドを一つずつ表示し、csvにてダウンロードして ./associated_data/multiTimeline ディレクトリを作成して保管する。  
     （開始日付やサンプル数を一致させてください。また、Excelなどの表計算ソフトで編集すると冒頭に空白行が追加されてしまうため、空白を削除の上、csvに書き出してください。）  
 
     - その他の指標のデータ  
-    任意のデータを取得して ./associated_data/Industry_indicator_data に保管する。
+    任意のデータを取得して ./associated_data/Industry_indicator_data ディレクトリを作成して保管する。
 
 11. 上記 9. の手順で取得したIndustry_indicator_dataを以下の形式に変形する  
     （ファイル作成方法のサンプルがEdit_Tabledata.ipynbにあります）
