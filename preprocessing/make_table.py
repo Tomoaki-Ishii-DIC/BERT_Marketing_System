@@ -1,8 +1,10 @@
 import os
 import pandas as pd
 import numpy as np
+import json
 
 from preprocessing import preprocessing
+from transformers import BertJapaneseTokenizer
 
 import MeCab
 import re
@@ -48,15 +50,21 @@ def text():
     # ソートは他のデータと結合する直前に行う（ラベルとずれてしまうため）
     df_s = df.sort_values('date')
 
-    TEXT_LEN = preprocessing.get_max(df_s["text"])
+    # トークンの最大値を取得
+    json_path = "./BERT-base_mecab-ipadic-bpe-32k/config.json"
+    with open(json_path) as f:
+        data = json.load(f)
+    maxlen = data["max_position_embeddings"]
 
     df_news_temp = pd.DataFrame([])
+
+    # トークナイザー
+    tknz = BertJapaneseTokenizer.from_pretrained('cl-tohoku/bert-base-japanese')
 
     for i in range(len(df_s)):
         text = df_s.loc[i]["text"]
         pre_text = preprocessing.preprocessing_text(text)
-        tokenized_text = preprocessing.tokenizer_mecab(pre_text)
-        indice = preprocessing.get_indice(text , maxlen=TEXT_LEN)
+        indice = preprocessing.get_indice(text , maxlen, tknz)
         df_text_temp = pd.DataFrame(indice).T
 
         df_news_temp = pd.concat([df_news_temp, df_text_temp], ignore_index=True)#, axis = 1
@@ -90,7 +98,7 @@ def trend():
     count = 0
     for file_name in os.listdir("./associated_data/multiTimeline"):
         if file_name.endswith(".csv"):
-            df_temp = pd.read_csv(csv_path_trend + "/"+ file_name, header=1)#, header=None, header=0
+            df_temp = pd.read_csv(csv_path_trend + "/"+ file_name, header=1)#, header=None, header=0, header=1
             print(csv_path_trend + "/"+ file_name)
 
             if count == 0:
