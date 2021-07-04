@@ -23,10 +23,8 @@ model = Model(inputs=model.input,
               outputs=[model.output,
                         model.get_layer('Encoder-12-MultiHeadSelfAttention').output])
 
-# ローカルJSONファイルの読み込み
-json_path = "./BERT-base_mecab-ipadic-bpe-32k/config.json"
-
 # トークンの最大値を取得
+json_path = "./BERT-base_mecab-ipadic-bpe-32k/config.json"
 with open(json_path) as f:
     data = json.load(f)
 maxlen = data["max_position_embeddings"]
