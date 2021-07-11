@@ -22,18 +22,27 @@ def preprocessing_text(text):
     text = re.sub('<br />', '', text)
     text = re.sub('\n', '', text)
 
-    # カンマ、ピリオド以外の記号をスペースに置換
+    # 半角スペース、全角スペースを削除
+    text = re.sub('　', '', text)
+    text = re.sub(' ', '', text)
+
+    # 数字文字の一律「0」化
+    text = re.sub(r'[0-9 ０-９]', '0', text)
+
+    # カンマ、ピリオド以外の記号を除去
     for p in string.punctuation:
         if (p == ".") or (p == ",") or (p == "。") or (p == "、"):
             continue
         else:
-            text = text.replace(p, " ")
+            text = text.replace(p, "")
+
 
     # ピリオドなどの前後にはスペースを入れておく
-    text = text.replace(".", " . ")
-    text = text.replace(",", " , ")
-    text = text.replace("。", " 。 ")
-    text = text.replace("、", " 、 ")
+    #text = text.replace(".", " . ")
+    #text = text.replace(",", " , ")
+    #text = text.replace("。", " 。 ")
+    #text = text.replace("、", " 、 ")
+
 
     return text
 
