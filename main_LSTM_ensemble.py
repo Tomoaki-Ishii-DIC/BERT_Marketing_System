@@ -41,13 +41,18 @@ def make_timestep_dataset(X_dataset, y_dataset, n_steps):
     X_list = []
     y_list = []
 
-    time_steps = len(dataset) - n_steps + 1
+    #time_steps = len(dataset) - n_steps + 1
+    # 2022/01/23
+    time_steps = len(X_dataset) - n_steps + 1
 
     i = 0
     while i  < time_steps:
         end_idx = i + n_steps - 1
-        X_seq = X_dataset[i:end_idx+1, :]
-        y_seq = y_dataset[end_idx]
+        #X_seq = X_dataset[i:end_idx+1, :]
+        #y_seq = y_dataset[end_idx]
+        # 2022/01/23
+        X_seq = X_dataset.iloc[i:end_idx+1, :]
+        y_seq = y_dataset.iloc[end_idx]
 
         X_list.append(X_seq)
         y_list.append(y_seq)
